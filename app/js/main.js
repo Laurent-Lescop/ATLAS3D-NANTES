@@ -18,6 +18,7 @@ import { initZoneStats, calculerStatistiques } from './modules/zone-stats.js';
 import { initReglages } from './modules/reglages.js';
 import { initSources } from './modules/sources.js';
 import { initClimat } from './modules/climat.js';
+import { initMobilites } from './modules/mobilites.js';
 import { capAligne, masqueExterieur, polygoneCadre } from './lib/geo.js';
 import { html } from './ui/format.js';
 
@@ -190,7 +191,6 @@ async function demarrer() {
   initZoneStats();
   initReglages();
   initSources();
-  panneauAVenir('mobilites', 'Mobilités', 'Trafic, trams et bus, parkings et vélos arrivent avec le lot 3.');
   panneauAVenir('lieux', 'Sites et projets', 'Les fiches et les projets IFC arrivent avec le lot 4.');
   panneauAVenir('parcours', 'Parcours', 'Les secteurs et parcours commentés arrivent avec le lot 5.');
 
@@ -209,6 +209,7 @@ async function demarrer() {
   initSoleil();
   surveillerConnexion();
   initClimat();
+  initMobilites();
   on('connexion', majBadge);
 
   document.getElementById('btn-zone-valider').addEventListener('click', () => validerZone());

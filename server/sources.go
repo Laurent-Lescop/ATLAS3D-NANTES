@@ -70,10 +70,10 @@ func declareSources() map[string]*Source {
 			"https://api.cyclocity.fr/contracts/nantes/gbfs/v3/station_information.json")},
 		"velos-etat": {TTL: 60 * time.Second, Request: get(
 			"https://api.cyclocity.fr/contracts/nantes/gbfs/v3/station_status.json")},
-		"naolib-retards": {TTL: 30 * time.Second, Request: get(
+		"naolib-retards": {TTL: 45 * time.Second, Request: get(
 			"https://proxy.transport.data.gouv.fr/resource/naolib-nantes-gtfs-rt-trip-update"),
 			Transform: decodeTripUpdates},
-		"naolib-alertes": {TTL: 2 * time.Minute, Request: get(
+		"naolib-alertes": {TTL: 5 * time.Minute, Request: get(
 			"https://proxy.transport.data.gouv.fr/resource/naolib-nantes-gtfs-rt-alerts"),
 			Transform: decodeAlerts},
 		"calendrier-scolaire": {TTL: 7 * 24 * time.Hour, Request: get(

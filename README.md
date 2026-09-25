@@ -63,6 +63,29 @@ Le panneau *Climat* suit l'heure et la date choisies :
 - **Hauteur de la Loire** au pont Anne-de-Bretagne (Hub'Eau / Vigicrues) : la marée y est sensible.
 - **Ensoleillement** : lever, coucher, durée du jour, hauteur du soleil à midi.
 
+### Mobilités
+
+Le panneau *Mobilités* affiche, dans la zone étudiée :
+
+- **Trafic routier** : fluidité des axes de Nantes Métropole (fluide, dense, saturé, bloqué),
+  avec des particules animées d'autant plus lentes que le trafic est dense.
+- **Trams, bus et Navibus** : tracés des lignes et véhicules animés. Naolib ne publie pas la
+  position GPS des véhicules : elle est **estimée** à partir des horaires théoriques (GTFS),
+  décalés des retards annoncés en temps réel. Pour une autre heure ou une autre date, l'atlas
+  affiche les horaires théoriques ; hors de la période couverte, ceux d'un jour type équivalent.
+- **Parkings publics** : jauges 3D d'occupation et places libres.
+- **Vélos en libre-service** : stations et vélos disponibles.
+
+Chaque donnée porte un badge : **En direct**, **Observé** (moyenne enregistrée par l'atlas pour
+le même type de jour et la même demi-heure) ou **Indicatif** (simulation, faute de mieux).
+
+**Enregistrement** : tant que l'atlas est ouvert et connecté, le serveur local relève le trafic,
+les parkings, les vélos et les retards (toutes les 2 à 5 minutes). Il conserve les relevés bruts
+14 jours (réglable) et construit des profils types — jours ouvrés, vacances scolaires (zone B),
+samedis, dimanches et fériés — utilisés ensuite hors connexion. Réglages et export CSV : panneau
+*Réglages*. Les données de Nantes Métropole sont sous licence ODbL : si vous diffusez la base
+enregistrée, citez les sources et partagez-la sous la même licence.
+
 L'adresse de la page mémorise la zone : elle peut être mise en favori (`#zone=…&etude`).
 
 ## Données
@@ -75,6 +98,10 @@ L'adresse de la page mémorise la zone : elle peut être mise en favori (`#zone=
 | Normales climatiques, roses des vents | Open-Meteo, archives ERA5 / ERA5-Land (Copernicus) | CC BY 4.0 |
 | Météo, qualité de l'air (en ligne) | Open-Meteo (prévisions, CAMS) | CC BY 4.0 |
 | Hauteur de la Loire (en ligne) | Hub'Eau — Vigicrues | Licence Ouverte 2.0 |
+| Horaires Naolib (GTFS), temps réel (GTFS-RT) | Nantes Métropole / transport.data.gouv.fr | ODbL |
+| Fluidité du trafic, parkings | Nantes Métropole — données ouvertes | ODbL |
+| Vélos en libre-service | JCDecaux (flux GBFS) | voir le fournisseur |
+| Calendrier scolaire | Ministère de l'Éducation nationale | Licence Ouverte 2.0 |
 
 Le pack local couvre **Nantes, Rezé et leurs abords** (emprise −1,66 / 47,15 / −1,46 / 47,31) :
 230 760 bâtiments. Hors de cette emprise, les bâtiments sont téléchargés à la demande quand une
@@ -96,6 +123,8 @@ app/                  application web (HTML, CSS, JavaScript, librairies dans ap
 data/fond/            fond de carte PMTiles, styles jour / nuit, polices, pictogrammes
 data/batiments/       bâtiments en cellules GeoJSON compressées + index et densité
 data/climat/          normales et roses des vents (Open-Meteo, 2016-2025)
+data/mobilite/        horaires Naolib (GTFS), tronçons de trafic, parkings, stations vélo
+data/enregistrements/ relevés temps réel et profils observés (créés à l'usage)
 data/editorial/       secteurs, contenus
 data/zones/           zones enregistrées depuis l'atlas
 server/               code source du serveur local (Go)
@@ -112,6 +141,7 @@ npm run vendor                       # copie les librairies dans app/vendor
 node tools/preparer-fond.mjs         # fond de carte (nécessite l'outil pmtiles dans tools/bin ou le PATH)
 node tools/preparer-batiments.mjs    # bâtiments OSM + BD TOPO → data/batiments
 node tools/preparer-climat.mjs       # normales et roses des vents → data/climat
+node tools/preparer-mobilites.mjs    # GTFS Naolib, trafic, parkings, vélos → data/mobilite
 npm run serveur                      # recompile les exécutables du dossier bin/
 npm test                             # test de bout en bout dans Chromium (captures dans tools/.cache)
 ```

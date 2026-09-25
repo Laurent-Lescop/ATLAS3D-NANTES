@@ -45,18 +45,28 @@ type Proxy struct {
 	sources map[string]*Source
 	client  *http.Client
 
-	mu    sync.Mutex
-	mem   map[string]*cacheEntry
-	locks map[string]*sync.Mutex
+	mu       sync.Mutex
+	mem      map[string]*cacheEntry
+	locks    map[string]*sync.Mutex
+	derniers map[string]time.Time // dernier appel par hôte (limitation de débit)
 }
+
+// Intervalle minimal entre deux appels vers certains fournisseurs.
+var limitesHotes = map[string]time.Duration{
+	"proxy.transport.data.gouv.fr": 31 * time.Second, // 1 requête / 30 s
+	"overpass-api.de":              5 * time.Second,
+}
+
+var errLimite = errors.New("limite de débit du fournisseur : nouvel essai plus tard")
 
 func NewProxy(app *App) *Proxy {
 	p := &Proxy{
-		app:     app,
-		sources: declareSources(),
-		client:  &http.Client{Timeout: 60 * time.Second},
-		mem:     map[string]*cacheEntry{},
-		locks:   map[string]*sync.Mutex{},
+		app:      app,
+		sources:  declareSources(),
+		client:   &http.Client{Timeout: 60 * time.Second},
+		mem:      map[string]*cacheEntry{},
+		locks:    map[string]*sync.Mutex{},
+		derniers: map[string]time.Time{},
 	}
 	return p
 }
@@ -105,7 +115,9 @@ func (p *Proxy) Get(ctx context.Context, name string, q url.Values) (*Result, er
 
 	data, ctype, err := p.fetch(ctx, src, q)
 	if err != nil {
-		log.Printf("Source %s indisponible : %v", name, err)
+		if !errors.Is(err, errLimite) {
+			log.Printf("Source %s indisponible : %v", name, err)
+		}
 		if cached != nil {
 			return &Result{cached.Data, cached.ContentType, cached.Fetched, "perime"}, nil
 		}
@@ -147,6 +159,17 @@ func (p *Proxy) fetch(ctx context.Context, src *Source, q url.Values) ([]byte, s
 		req, _, err := src.Request(q)
 		if err != nil {
 			return nil, "", err
+		}
+		if lim, ok := limitesHotes[req.URL.Host]; ok {
+			p.mu.Lock()
+			trop := time.Since(p.derniers[req.URL.Host]) < lim
+			if !trop {
+				p.derniers[req.URL.Host] = time.Now()
+			}
+			p.mu.Unlock()
+			if trop {
+				return nil, "", errLimite
+			}
 		}
 		req = req.WithContext(ctx)
 		d, ct, err := doRequest(p.client, req)
@@ -255,7 +278,7 @@ func (p *Proxy) Handle(w http.ResponseWriter, r *http.Request) {
 	res, err := p.Get(r.Context(), name, q)
 	if err != nil {
 		status := http.StatusBadGateway
-		if errors.Is(err, errNoData) {
+		if errors.Is(err, errNoData) || errors.Is(err, errLimite) {
 			status = http.StatusServiceUnavailable
 		}
 		writeJSON(w, status, map[string]any{"erreur": err.Error(), "en_ligne": p.app.isOnline()})
