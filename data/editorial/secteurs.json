@@ -1,0 +1,12 @@
+[
+  {
+    "id": "ile-de-nantes",
+    "nom": "Île de Nantes",
+    "cadre": { "centre": [-1.54368, 47.20572], "largeur": 5000, "hauteur": 1400, "angle": 12.5 }
+  },
+  {
+    "id": "centre-historique",
+    "nom": "Centre historique",
+    "cadre": { "centre": [-1.5555, 47.2150], "largeur": 1900, "hauteur": 1150, "angle": 0 }
+  }
+]

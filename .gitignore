@@ -1,0 +1,8 @@
+node_modules/
+tools/.cache/
+tools/bin/
+data/cache/
+data/enregistrements/
+.DS_Store
+Thumbs.db
+*.log
