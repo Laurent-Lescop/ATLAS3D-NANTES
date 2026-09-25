@@ -20,6 +20,13 @@
   --police: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   --haut: 60px;
   --rail: 68px;
+  /* Graphiques (palette validée : série 1 bleue, rampe ordinale bleue pour le vent) */
+  --serie-1: #2a78d6;
+  --serie-muette: #898781;
+  --grille: #e1e0d9;
+  --axe: #c3c2b7;
+  --rose-1: #86b6ef; --rose-2: #5598e7; --rose-3: #2a78d6; --rose-4: #1c5cab; --rose-5: #104281;
+  --statut-bon: #0ca30c; --statut-moyen: #fab219; --statut-degrade: #ec835a; --statut-mauvais: #d03b3b;
   color-scheme: light;
 }
 
@@ -32,6 +39,10 @@ body[data-ambiance="nuit"] {
   --papier-2: rgba(34, 41, 55, 0.9);
   --ligne: rgba(238, 241, 246, 0.14);
   --accent-doux: rgba(232, 128, 60, 0.18);
+  --serie-1: #3987e5;
+  --grille: #2c2c2a;
+  --axe: #383835;
+  --rose-1: #9ec5f4; --rose-2: #6da7ec; --rose-3: #3987e5; --rose-4: #256abf; --rose-5: #184f95;
   color-scheme: dark;
 }
 
@@ -135,7 +146,7 @@ body[data-mode="selection"] .rail button[data-panneau="stats"] { opacity: .45; }
 .panneau > header { display: flex; align-items: center; gap: 8px; padding: 12px 10px 8px 18px; border-bottom: 1px solid var(--ligne); }
 .panneau > header h2 { flex: 1; margin: 0; font-size: 16px; }
 .panneau .contenu { flex: 1; overflow-y: auto; padding: 14px 18px 20px; }
-@keyframes apparition { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+@keyframes apparition { from { transform: translateY(6px); } to { transform: none; } }
 
 .section { margin-bottom: 20px; }
 .section > h3 {
@@ -286,9 +297,42 @@ body[data-ambiance="nuit"] .notification { background: #eef1f6; color: #161b26; 
 .avant-apres .poignee { position: absolute; top: 0; bottom: 0; left: 50%; width: 2px; background: #fff; box-shadow: 0 0 4px rgba(0,0,0,.5); pointer-events: none; }
 
 /* Graphiques */
-.graphique { width: 100%; height: auto; display: block; }
-.graphique text { font-size: 10px; fill: var(--encre-3); font-family: var(--police); }
-.graphique .axe { stroke: var(--ligne); stroke-width: 1; }
+.graphique { width: 100%; height: auto; display: block; overflow: visible; stroke: none; }
+.graphique text { font-size: 10px; fill: var(--encre-3); font-family: var(--police); font-variant-numeric: tabular-nums; }
+.graphique .grille { stroke: var(--grille); stroke-width: 1; }
+.graphique .axe { stroke: var(--axe); stroke-width: 1; }
+.graphique .reticule { stroke: var(--encre-3); stroke-width: 1; }
+.graphique .marqueur { stroke: var(--accent); stroke-width: 1.5; }
+.graphique .point { stroke: var(--papier-plein); stroke-width: 2; }
+.graphique .segment { transition: opacity .1s; }
+.graphique .segment:hover { opacity: .8; }
+.graphique .cardinal { font-weight: 700; fill: var(--encre-2); font-size: 11px; }
+.graphique .calme { stroke: var(--grille); }
+.graphique .calme-texte { font-size: 9px; fill: var(--encre-2); }
+.graphique .vent-courant line { stroke: var(--encre); stroke-width: 2; stroke-linecap: round; }
+.graphique .vent-courant path { fill: var(--encre); }
+.graphique-conteneur { position: relative; }
+.graphique-infobulle {
+  position: absolute; z-index: 5; pointer-events: none; padding: 6px 9px; border-radius: 8px; white-space: nowrap;
+  background: var(--papier-plein); border: 1px solid var(--ligne); box-shadow: var(--ombre); font-size: 11.5px;
+}
+.graphique-infobulle .ligne { display: flex; align-items: center; gap: 6px; }
+.graphique-infobulle b { font-weight: 700; font-variant-numeric: tabular-nums; }
+.graphique-infobulle span { color: var(--encre-3); }
+.graphique-infobulle i { width: 10px; height: 10px; border-radius: 3px; flex: none; }
+.graphique-infobulle i.trait { height: 2px; border-radius: 1px; width: 12px; }
+.legende-ligne { display: flex; flex-wrap: wrap; gap: 4px 14px; font-size: 11.5px; color: var(--encre-2); margin: 4px 0 6px; }
+.legende-ligne span { display: inline-flex; align-items: center; gap: 6px; }
+.legende-ligne i { width: 14px; height: 2px; border-radius: 1px; }
+.legende-ligne i.case { width: 10px; height: 10px; border-radius: 3px; }
+.meteo-principale { display: flex; align-items: center; gap: 14px; margin-bottom: 10px; }
+.meteo-principale .temperature { font-size: 40px; font-weight: 600; line-height: 1; }
+.meteo-principale .ciel { font-size: 13px; color: var(--encre-2); }
+.meteo-principale .ciel strong { display: block; color: var(--encre); font-size: 15px; }
+.fleche-vent { display: inline-block; width: 16px; height: 16px; vertical-align: -3px; }
+.statut { display: inline-flex; align-items: center; gap: 6px; font-weight: 700; }
+.statut i { width: 10px; height: 10px; border-radius: 50%; }
+details.tableau-donnees summary { cursor: pointer; font-size: 12px; color: var(--encre-2); margin-top: 6px; }
 
 /* --- Écrans étroits ------------------------------------------------------------ */
 @media (max-width: 900px) {

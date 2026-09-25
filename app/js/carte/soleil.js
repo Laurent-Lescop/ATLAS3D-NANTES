@@ -69,15 +69,21 @@ function appliquer() {
   const soleilVisible = hauteur > 0.3;
 
   etat.temps = { date, minutes: t.minutes, jour: t.jour, auto: t.auto };
-  etat.soleil = { azimut, hauteur, jour };
+
+  // Nébulosité réelle (prévision ou observation) : le ciel couvert adoucit la
+  // lumière directe et les ombres. Les normales de saison ne sont pas appliquées.
+  const meteo = etat.reglages.nuagesReels !== false ? etat.meteoA?.(date) : null;
+  const nuages = meteo && meteo.etat !== 'simule' ? Math.min(1, Math.max(0, meteo.nebulosite / 100)) : 0;
+  etat.soleil = { azimut, hauteur, jour, nuages };
 
   definirEclairage({
     timestamp: date.getTime(),
-    intensiteSoleil: soleilVisible ? +(0.6 + 0.7 * lisse(0, 30, hauteur)).toFixed(3) : 0,
+    intensiteSoleil: soleilVisible ? +((0.6 + 0.7 * lisse(0, 30, hauteur)) * (1 - 0.6 * nuages)).toFixed(3) : 0,
     couleurSoleil: couleurSoleil(hauteur).map(Math.round),
-    ambiance: +(0.45 + 0.6 * jour).toFixed(3),
-    couleurAmbiance: melanger([130, 150, 215], [255, 255, 255], jour).map(Math.round),
+    ambiance: +((1.25 - 0.2 * jour) * (1 + 0.1 * nuages)).toFixed(3),
+    couleurAmbiance: melanger([120, 140, 205], [255, 255, 255], jour).map(Math.round),
     ombres: etat.reglages.ombres && soleilVisible,
+    couleurOmbre: [0.1, 0.12, 0.2, +(0.42 * (1 - 0.75 * nuages)).toFixed(3)],
   });
 
   appliquerAmbiance(1 - jour);
@@ -90,6 +96,11 @@ function appliquer() {
   const carte = obtenirCarte();
   if (carte) {
     const ciel = couleursCiel(hauteur);
+    if (nuages) {
+      const gris = melanger([46, 50, 60], [168, 174, 184], jour);
+      ciel.zenith = melanger(ciel.zenith, gris, 0.75 * nuages);
+      ciel.horizon = melanger(ciel.horizon, gris, 0.6 * nuages);
+    }
     carte.setSky({
       'sky-color': versCss(ciel.zenith),
       'horizon-color': versCss(ciel.horizon),
@@ -170,22 +181,22 @@ function dessinerCourse(date) {
     new deck.PathLayer({
       id: 'course-soleil', data: [{ chemin }], getPath: (d) => d.chemin,
       getColor: [242, 170, 60, 210], getWidth: 3, widthUnits: 'pixels', jointRounded: true, capRounded: true,
-      parameters: { depthTest: false }, shadowEnabled: false,
+      parameters: { depthCompare: 'always', depthWriteEnabled: false }, shadowEnabled: false,
     }),
     new deck.ScatterplotLayer({
       id: 'soleil-halo', data: soleil, getPosition: (d) => d.p, getRadius: 22, radiusUnits: 'pixels',
-      getFillColor: [255, 200, 80, 70], billboard: true, parameters: { depthTest: false }, shadowEnabled: false,
+      getFillColor: [255, 200, 80, 70], billboard: true, parameters: { depthCompare: 'always', depthWriteEnabled: false }, shadowEnabled: false,
     }),
     new deck.ScatterplotLayer({
       id: 'soleil-disque', data: soleil, getPosition: (d) => d.p, getRadius: 10, radiusUnits: 'pixels',
       getFillColor: [255, 214, 90, 255], stroked: true, getLineColor: [255, 255, 255, 230], lineWidthUnits: 'pixels',
-      getLineWidth: 2, billboard: true, parameters: { depthTest: false }, shadowEnabled: false,
+      getLineWidth: 2, billboard: true, parameters: { depthCompare: 'always', depthWriteEnabled: false }, shadowEnabled: false,
     }),
     new deck.TextLayer({
       id: 'soleil-heures', data: reperes, getPosition: (d) => d.p, getText: (d) => d.t, getSize: 12,
       getColor: [120, 80, 20, 255], background: true, getBackgroundColor: [255, 246, 225, 220],
       backgroundPadding: [4, 2], fontFamily: 'system-ui, sans-serif', getPixelOffset: [0, -14],
-      parameters: { depthTest: false }, shadowEnabled: false,
+      parameters: { depthCompare: 'always', depthWriteEnabled: false }, shadowEnabled: false,
     }),
   ]);
 }
@@ -264,6 +275,7 @@ export function initSoleil() {
   setInterval(() => { if (t.auto && !t.lecture) maintenant(); }, 60000);
   on('zone', () => { majDegrade(); appliquer(); });
   on('reglages', () => appliquer());
+  on('meteo', () => appliquer());
   majDegrade();
   appliquer();
 }

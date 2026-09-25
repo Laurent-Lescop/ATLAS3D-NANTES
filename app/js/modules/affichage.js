@@ -53,6 +53,7 @@ function rendre(conteneur) {
       ${interrupteur('ombres', 'Ombres portées', 'Calculées selon la position réelle du soleil')}
       ${interrupteur('aretes', 'Arêtes des volumes', 'Souligne les volumes façon maquette')}
       ${interrupteur('courseSoleil', 'Course du soleil', 'Trajectoire du jour choisi au-dessus de la zone')}
+      ${interrupteur('nuagesReels', 'Nuages réels', 'La nébulosité prévue ou observée adoucit le soleil et les ombres')}
       ${interrupteur('contexte3d', 'Bâtiments hors zone en 3D', 'Volumes simplifiés du fond de carte')}
       ${interrupteur('etiquettes', 'Noms des rues et des lieux')}
       ${interrupteur('pictogrammes', 'Commerces et services', 'Pictogrammes du fond de carte OpenStreetMap')}
@@ -63,6 +64,7 @@ function rendre(conteneur) {
         <button data-vue="dessus">Vue de dessus</button>
         <button data-vue="3d">Vue 3D</button>
         <button data-vue="aligner">Aligner sur la zone</button>
+        <button data-vue="soleil">Face au soleil</button>
       </div>
     </div>
   </div>`);
@@ -88,6 +90,9 @@ function rendre(conteneur) {
     if (b.dataset.vue === 'dessus') carte.easeTo({ pitch: 0, duration: 800 });
     if (b.dataset.vue === '3d') carte.easeTo({ pitch: 60, duration: 800 });
     if (b.dataset.vue === 'aligner' && etat.zone) carte.easeTo({ bearing: capAligne(etat.zone.rect), duration: 800 });
+    if (b.dataset.vue === 'soleil' && etat.soleil) {
+      carte.easeTo({ bearing: etat.soleil.azimut, pitch: Math.max(carte.getPitch(), 50), duration: 1000 });
+    }
   });
   conteneur.appendChild(el);
 }

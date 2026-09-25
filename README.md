@@ -46,8 +46,22 @@ Navigateur conseillé : une version récente de Firefox, Chrome, Edge ou Safari 
 4. **Survol d'un bâtiment** : emprise au sol (m²), hauteur, niveaux, surface de plancher estimée,
    année et usage. **Clic** : fiche détaillée. **Maj + clic** : sélection multiple et totaux.
 5. **Panneaux** (barre de gauche) : *Affichage* (colorations par hauteur, époque, usage ; ombres ;
-   course du soleil…), *Zone* (indicateurs : CES, COS, hauteurs, époques, usages ; export),
-   *Réglages* (zones enregistrées), *Sources*.
+   course du soleil ; nuages réels…), *Climat* (voir ci-dessous), *Zone* (indicateurs : CES, COS,
+   hauteurs, époques, usages ; export), *Réglages* (zones enregistrées), *Sources*.
+
+### Climat
+
+Le panneau *Climat* suit l'heure et la date choisies :
+
+- **Météo** à l'heure choisie : observation (passé récent) ou prévision (3 jours) Open-Meteo ;
+  au-delà, ou hors connexion, **valeurs indicatives** tirées des normales 2016-2025, clairement
+  signalées. La nébulosité réelle adoucit la lumière du soleil et les ombres (réglable).
+- **Courbe de température** de la journée, comparée à la normale de saison.
+- **Rose des vents** climatologique du mois ou de l'année (10 ans de données horaires, réanalyse
+  ERA5), avec la flèche du vent à l'heure choisie, et **vent animé** sur la carte (option).
+- **Qualité de l'air** (indice européen, particules, NO₂, ozone, pollens — modèle CAMS).
+- **Hauteur de la Loire** au pont Anne-de-Bretagne (Hub'Eau / Vigicrues) : la marée y est sensible.
+- **Ensoleillement** : lever, coucher, durée du jour, hauteur du soleil à midi.
 
 L'adresse de la page mémorise la zone : elle peut être mise en favori (`#zone=…&etude`).
 
@@ -58,6 +72,9 @@ L'adresse de la page mémorise la zone : elle peut être mise en favori (`#zone=
 | Fond de carte | OpenStreetMap via Protomaps (fichiers PMTiles) | ODbL |
 | Emprises des bâtiments | OpenStreetMap (extrait OSM France, Loire-Atlantique) | ODbL |
 | Hauteurs, dates, usages, logements | IGN BD TOPO (Géoplateforme) | Licence Ouverte 2.0 |
+| Normales climatiques, roses des vents | Open-Meteo, archives ERA5 / ERA5-Land (Copernicus) | CC BY 4.0 |
+| Météo, qualité de l'air (en ligne) | Open-Meteo (prévisions, CAMS) | CC BY 4.0 |
+| Hauteur de la Loire (en ligne) | Hub'Eau — Vigicrues | Licence Ouverte 2.0 |
 
 Le pack local couvre **Nantes, Rezé et leurs abords** (emprise −1,66 / 47,15 / −1,46 / 47,31) :
 230 760 bâtiments. Hors de cette emprise, les bâtiments sont téléchargés à la demande quand une
@@ -78,6 +95,7 @@ bin/                  serveur local compilé (Windows, macOS, Linux)
 app/                  application web (HTML, CSS, JavaScript, librairies dans app/vendor)
 data/fond/            fond de carte PMTiles, styles jour / nuit, polices, pictogrammes
 data/batiments/       bâtiments en cellules GeoJSON compressées + index et densité
+data/climat/          normales et roses des vents (Open-Meteo, 2016-2025)
 data/editorial/       secteurs, contenus
 data/zones/           zones enregistrées depuis l'atlas
 server/               code source du serveur local (Go)
@@ -93,6 +111,7 @@ npm install                          # librairies et outils
 npm run vendor                       # copie les librairies dans app/vendor
 node tools/preparer-fond.mjs         # fond de carte (nécessite l'outil pmtiles dans tools/bin ou le PATH)
 node tools/preparer-batiments.mjs    # bâtiments OSM + BD TOPO → data/batiments
+node tools/preparer-climat.mjs       # normales et roses des vents → data/climat
 npm run serveur                      # recompile les exécutables du dossier bin/
 npm test                             # test de bout en bout dans Chromium (captures dans tools/.cache)
 ```

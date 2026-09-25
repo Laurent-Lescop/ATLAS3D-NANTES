@@ -4,7 +4,7 @@
 /* global deck */
 
 // Ordre de dessin des groupes (du dessous vers le dessus).
-const ORDRE = ['sol', 'mobilites-sol', 'batiments', 'projets', 'mobilites', 'soleil', 'etiquettes', 'outils'];
+const ORDRE = ['sol', 'mobilites-sol', 'batiments', 'projets', 'mobilites', 'meteo', 'soleil', 'etiquettes', 'outils'];
 
 let overlay = null;
 let eclairage = null;         // instance réellement utilisée par deck (réutilisée)

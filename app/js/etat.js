@@ -14,6 +14,7 @@ export const etat = {
     pictogrammes: false,
     aretes: true,
     courseSoleil: false,
+    nuagesReels: true,
   },
 };
 

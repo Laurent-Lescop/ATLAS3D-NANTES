@@ -88,10 +88,15 @@ func (p *Proxy) Get(ctx context.Context, name string, q url.Values) (*Result, er
 	defer lock.Unlock()
 
 	cached := p.load(fullKey)
+	online := p.app.isOnline()
 	if cached != nil && time.Since(cached.Fetched) < src.TTL {
-		return &Result{cached.Data, cached.ContentType, cached.Fetched, "direct"}, nil
+		state := "direct"
+		if !online {
+			state = "cache" // hors ligne : présentée comme dernière valeur connue
+		}
+		return &Result{cached.Data, cached.ContentType, cached.Fetched, state}, nil
 	}
-	if !p.app.isOnline() {
+	if !online {
 		if cached != nil {
 			return &Result{cached.Data, cached.ContentType, cached.Fetched, "cache"}, nil
 		}
