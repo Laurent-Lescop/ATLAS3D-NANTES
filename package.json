@@ -10,7 +10,8 @@
     "donnees": "node tools/preparer-tout.mjs",
     "donnees:batiments": "node tools/preparer-batiments.mjs",
     "serveur": "bash tools/compiler-serveur.sh",
-    "test": "node tools/tester.mjs"
+    "test": "node tools/tester.mjs",
+    "vignettes": "node tools/capturer-vignettes.mjs"
   },
   "devDependencies": {
     "@protomaps/basemaps": "^5.7.2",

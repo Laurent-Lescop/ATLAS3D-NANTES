@@ -1,12 +1,20 @@
 [
-  {
-    "id": "ile-de-nantes",
-    "nom": "Île de Nantes",
-    "cadre": { "centre": [-1.54368, 47.20572], "largeur": 5000, "hauteur": 1400, "angle": 12.5 }
-  },
-  {
-    "id": "centre-historique",
-    "nom": "Centre historique",
-    "cadre": { "centre": [-1.5555, 47.2150], "largeur": 1900, "hauteur": 1150, "angle": 0 }
-  }
+  { "id": "centre-historique", "nom": "Centre historique", "description": "Château, cathédrale, Bouffay, île Feydeau, tour Bretagne.",
+    "cadre": { "centre": [-1.5555, 47.2155], "largeur": 1900, "hauteur": 1200, "angle": 0 } },
+  { "id": "graslin-commerce", "nom": "Graslin – Commerce", "description": "Quartier du XVIIIe siècle de Crucy : places Graslin et Royale, passage Pommeraye, quai de la Fosse.",
+    "cadre": { "centre": [-1.5600, 47.2123], "largeur": 1050, "hauteur": 760, "angle": 0 } },
+  { "id": "ile-de-nantes", "nom": "Île de Nantes", "description": "L'île entière, des anciens chantiers navals à Beaulieu.",
+    "cadre": { "centre": [-1.54368, 47.20572], "largeur": 5000, "hauteur": 1400, "angle": 12.5 } },
+  { "id": "quartier-creation", "nom": "Quartier de la Création", "description": "Pointe ouest de l'île : Machines, nefs, halles Alstom, école d'architecture, futur CHU.",
+    "cadre": { "centre": [-1.5640, 47.2040], "largeur": 1900, "hauteur": 1000, "angle": 12.5 } },
+  { "id": "beaulieu", "nom": "Beaulieu", "description": "Est de l'île de Nantes : grands ensembles et centre commercial des années 1970.",
+    "cadre": { "centre": [-1.5360, 47.2060], "largeur": 1500, "hauteur": 900, "angle": 12.5 } },
+  { "id": "euronantes", "nom": "Gare – Euronantes – Malakoff", "description": "Gare et sa mezzanine, Lieu Unique, Jardin des Plantes, Malakoff.",
+    "cadre": { "centre": [-1.5380, 47.2160], "largeur": 2000, "hauteur": 1100, "angle": 0 } },
+  { "id": "bas-chantenay", "nom": "Bas-Chantenay", "description": "Carrière Misery, Jardin extraordinaire, butte Sainte-Anne, rive nord de la Loire.",
+    "cadre": { "centre": [-1.5840, 47.2015], "largeur": 1600, "hauteur": 900, "angle": 15 } },
+  { "id": "rive-sud", "nom": "Rive sud : Trentemoult – Pirmil", "description": "Trentemoult, Rezé, Pirmil-les-Isles, face à l'île de Nantes.",
+    "cadre": { "centre": [-1.5610, 47.1950], "largeur": 3500, "hauteur": 1200, "angle": 8 } },
+  { "id": "reze", "nom": "Rezé – Maison radieuse", "description": "L'unité d'habitation de Le Corbusier dans son parc.",
+    "cadre": { "centre": [-1.5680, 47.1890], "largeur": 1200, "hauteur": 900, "angle": 0 } }
 ]

@@ -23,6 +23,8 @@ import { pointInPolygon } from '../lib/batiments-core.js';
 
 const EMBLEME = [222, 124, 62];
 const PROJET = [47, 127, 209];
+// Site existant en cuivre ; projet ou chantier en bleu.
+const couleurSite = (s) => (!s.statut || s.statut === 'existant' ? EMBLEME : PROJET);
 
 let sites = [];
 let projets = [];
@@ -31,6 +33,7 @@ let filtre = lirePreference('filtreLieux', 'tous');
 let enCalage = null;      // projet en cours de calage
 let placementArme = null; // fonction appelée au prochain clic sur la carte
 let majCalage = null;     // met à jour le panneau de calage
+let selectionCourante = [];
 
 // --- Chargement -------------------------------------------------------------------------------
 
@@ -64,7 +67,7 @@ function hauteurSite(s) {
   return h.length ? Math.max(...h) : 18;
 }
 
-function dansZone([lon, lat], marge = 400) {
+function dansZone([lon, lat], marge = 120) {
   if (!etat.zone) return false;
   const [o, s, e, n] = emprise(etat.zone.rect, marge);
   return lon >= o && lon <= e && lat >= s && lat <= n;
@@ -119,26 +122,62 @@ function dessiner() {
   }
   definirCouches('projets', couchesProjets);
 
-  const vs = sitesVisibles();
-  const marques = [
-    ...vs.map((s) => ({ type: 'site', ref: s, titre: s.titre, p: [...s.position, hauteurSite(s) + 6], couleur: s.statut === 'projet' ? PROJET : EMBLEME })),
-    ...vp.map((p) => ({
+  dessinerEtiquettes();
+}
+
+// Marques (pastille + nom) des sites et des projets visibles.
+function marques() {
+  return [
+    ...sitesVisibles().map((s) => ({ type: 'site', ref: s, titre: s.etiquette || s.titre, p: [...s.position, hauteurSite(s) + 6], couleur: couleurSite(s) })),
+    ...projetsVisibles().map((p) => ({
       type: 'projet', ref: p, titre: p.fiche?.titre || p.id,
       p: [p.placement.lon, p.placement.lat, (p.placement.alt || 0) + (p.dimensions?.[2] || 20) * (p.placement.echelle || 1) + 6], couleur: PROJET,
     })),
   ];
-  definirCouches('etiquettes', etat.reglages.etiquettesLieux === false ? [] : [
+}
+
+// Tri des noms en coordonnées écran : un nom qui en chevauche un autre, plus prioritaire, est masqué
+// (sa pastille reste visible et son nom apparaît au survol).
+function nomsLisibles(liste) {
+  const carte = obtenirCarte();
+  const c = carte.getCanvas();
+  const centre = carte.getCenter();
+  const vue = new deck.WebMercatorViewport({
+    width: c.clientWidth, height: c.clientHeight, longitude: centre.lng, latitude: centre.lat,
+    zoom: carte.getZoom(), pitch: carte.getPitch(), bearing: carte.getBearing(),
+  });
+  const priorite = (d) => (d.type === 'projet' ? 1e4 : 0) + (d.ref.batiments?.length ? 500 : 0) + d.p[2];
+  const boites = [];
+  const gardes = [];
+  for (const d of [...liste].sort((a, b) => priorite(b) - priorite(a))) {
+    const [x, y] = vue.project(d.p);
+    if (x < -50 || y < -50 || x > c.clientWidth + 50 || y > c.clientHeight + 50) continue;
+    const lignes = Math.ceil(d.titre.length / 20);
+    const l = Math.min(d.titre.length, 20) * 7.2 + 14, h = lignes * 15 + 8;
+    const b = [x - l / 2, y - 16 - h, x + l / 2, y - 12];
+    if (boites.some((o) => b[0] < o[2] && b[2] > o[0] && b[1] < o[3] && b[3] > o[1])) continue;
+    boites.push(b);
+    gardes.push(d);
+  }
+  return gardes;
+}
+
+function dessinerEtiquettes() {
+  if (etat.mode !== 'etude' || etat.reglages.etiquettesLieux === false) { definirCouches('etiquettes', []); return; }
+  const tout = marques();
+  const noms = nomsLisibles(tout);
+  definirCouches('etiquettes', [
     new deck.ScatterplotLayer({
-      id: 'lieux-pastilles', data: marques, getPosition: (d) => d.p, getRadius: 6, radiusUnits: 'pixels',
+      id: 'lieux-pastilles', data: tout, getPosition: (d) => d.p, getRadius: 6, radiusUnits: 'pixels',
       getFillColor: (d) => d.couleur, stroked: true, getLineColor: [255, 255, 255], getLineWidth: 2, lineWidthUnits: 'pixels',
       billboard: true, pickable: true, shadowEnabled: false, parameters: { depthCompare: 'always', depthWriteEnabled: false },
     }),
     new deck.TextLayer({
-      id: 'lieux-noms', data: marques, getPosition: (d) => d.p, getText: (d) => d.titre, getSize: 12.5,
+      id: 'lieux-noms', data: noms, getPosition: (d) => d.p, getText: (d) => d.titre, getSize: 12.5,
       getColor: [27, 33, 48, 255], background: true, getBackgroundColor: [255, 255, 255, 230], backgroundPadding: [6, 3],
       getPixelOffset: [0, -16], fontFamily: 'system-ui, sans-serif', fontWeight: 600, characterSet: 'auto',
       pickable: true, shadowEnabled: false, parameters: { depthCompare: 'always', depthWriteEnabled: false },
-      maxWidth: 14, wordBreak: 'break-word',
+      maxWidth: 16, wordBreak: 'break-word',
     }),
   ]);
 }
@@ -146,7 +185,7 @@ function dessiner() {
 function majEmblemesEtMasques() {
   const emblemes = new Map();
   for (const s of sites) {
-    for (const id of s.batiments || []) emblemes.set(id, { couleur: s.statut === 'projet' ? PROJET : EMBLEME, nom: s.titre });
+    for (const id of s.batiments || []) emblemes.set(id, { couleur: couleurSite(s), nom: s.titre });
   }
   definirEmblemes(emblemes);
   definirMasques(avecProjets ? projets.flatMap((p) => p.masquer || []) : []);
@@ -185,7 +224,13 @@ export async function ouvrirSite(s) {
       rafraichirPanneau('lieux');
       ouvrirSite(s);
     },
-    actions: [{ libelle: 'Supprimer ce lieu', fn: () => supprimerSite(s) }],
+    actions: [
+      ...(selectionCourante.length ? [{
+        libelle: `Associer la sélection (${selectionCourante.length} bât.)`,
+        fn: () => associerSelection(s),
+      }] : []),
+      { libelle: 'Supprimer ce lieu', fn: () => supprimerSite(s) },
+    ],
   });
 }
 
@@ -211,9 +256,21 @@ function ouvrirProjet(p) {
 }
 
 async function enregistrerIndex() {
-  const propres = sites.map(({ id, titre, categorie, statut, position, batiments, secteur, resume, vue, hauteur }) =>
-    ({ id, titre, categorie, statut, position, batiments, secteur, resume, vue, hauteur }));
+  const propres = sites.map(({ id, titre, etiquette, categorie, statut, position, batiments, secteur, resume, vue, hauteur }) =>
+    ({ id, titre, etiquette, categorie, statut, position, batiments, secteur, resume, vue, hauteur }));
   await enregistrerFichier('poi/index.json', JSON.stringify({ version: 1, lieux: propres }, null, 1), 'application/json');
+}
+
+// Les bâtiments sélectionnés (Maj + clic) deviennent les bâtiments du site, mis en valeur en 3D.
+async function associerSelection(s) {
+  const ids = selectionCourante.map((b) => b.properties.id);
+  if (s.batiments?.length && !confirm(`Remplacer les ${s.batiments.length} bâtiment(s) associé(s) à « ${s.titre} » par la sélection (${ids.length}) ?`)) return;
+  s.batiments = ids;
+  await enregistrerIndex();
+  majEmblemesEtMasques();
+  dessiner();
+  notifier(`${ids.length} bâtiment(s) associé(s) à « ${s.titre} ».`);
+  ouvrirSite(s);
 }
 
 async function supprimerSite(s) {
@@ -453,14 +510,15 @@ function rendre(conteneur) {
         la maquette, son fichier IFC et sa fiche sont enregistrés dans data/projets.</p>
     </div>
     <div class="section">
-      <h3>Sites et projets sans maquette</h3>
-      <div class="segments" id="lieux-filtre">
-        <button data-v="tous" class="${filtre === 'tous' ? 'actif' : ''}">Tous</button>
-        ${cats.map((c) => `<button data-v="${echapper(c)}" class="${filtre === c ? 'actif' : ''}">${echapper(c)}</button>`).join('')}
-        <button data-v="projet" class="${filtre === 'projet' ? 'actif' : ''}">Projets</button>
-      </div>
+      <h3>Sites remarquables</h3>
+      <label class="champ"><span>Afficher</span><select id="lieux-filtre">
+        <option value="tous">Tous les sites</option>
+        ${cats.map((c) => `<option value="${echapper(c)}" ${filtre === c ? 'selected' : ''}>${echapper(c)}</option>`).join('')}
+        <option value="projet" ${filtre === 'projet' ? 'selected' : ''}>Projets (sans maquette)</option>
+      </select></label>
+      ${etat.mode === 'etude' ? '<p class="note">Sites situés dans la zone d\'étude.</p>' : ''}
       ${[...parCat.entries()].map(([cat, liste]) => `<h4 class="sous-titre">${echapper(cat)}</h4><ul class="liste-lieux">${liste.map((s) =>
-        `<li><button data-site="${echapper(s.id)}"><span class="pastille" style="background:rgb(${s.statut === 'projet' ? PROJET : EMBLEME})"></span>
+        `<li><button data-site="${echapper(s.id)}"><span class="pastille" style="background:rgb(${couleurSite(s)})"></span>
           <span>${echapper(s.titre)}<small>${echapper(s.resume || STATUTS[s.statut] || '')}</small></span></button></li>`).join('')}</ul>`).join('')
         || `<p class="aide">${etat.mode === 'etude' ? 'Aucun site dans cette zone.' : 'Aucun site.'}</p>`}
       <button class="bouton" id="lieux-ajouter" style="margin-top:8px">Ajouter un lieu ou un projet</button>
@@ -478,10 +536,8 @@ function rendre(conteneur) {
     dessiner();
     rafraichirPanneau('lieux');
   });
-  el.querySelector('#lieux-filtre').addEventListener('click', (e) => {
-    const b = e.target.closest('button');
-    if (!b) return;
-    filtre = b.dataset.v;
+  el.querySelector('#lieux-filtre').addEventListener('change', (e) => {
+    filtre = e.target.value;
     ecrirePreference('filtreLieux', filtre);
     dessiner();
     rafraichirPanneau('lieux');
@@ -510,7 +566,7 @@ function survol(info) {
   if (!info.object || !id) return;
   if (id === 'lieux-pastilles' || id === 'lieux-noms') {
     const d = info.object;
-    afficherInfobulle(info.x, info.y, `<h4>${echapper(d.titre)}</h4><div class="indice">${d.type === 'projet' ? 'Projet (maquette IFC)' : echapper(d.ref.categorie || '')} — cliquez pour ouvrir la fiche</div>`);
+    afficherInfobulle(info.x, info.y, `<h4>${echapper(d.type === 'site' ? d.ref.titre : d.titre)}</h4><div class="indice">${d.type === 'projet' ? 'Projet (maquette IFC)' : echapper(d.ref.categorie || '')} — cliquez pour ouvrir la fiche</div>`);
   } else if (id.startsWith('projet-') && id !== 'projet-empreinte') {
     const p = info.object;
     afficherInfobulle(info.x, info.y, `<h4>${echapper(p.fiche?.titre || p.id)}</h4><div class="indice">Maquette IFC — cliquez pour ouvrir la fiche</div>`);
@@ -534,7 +590,9 @@ export async function initLieux() {
   surClic(clic);
   on('zone', () => { majEmblemesEtMasques(); dessiner(); rafraichirPanneau('lieux'); });
   on('mode', dessiner);
+  obtenirCarte().on('moveend', () => { if (etat.mode === 'etude') dessinerEtiquettes(); });
   on('reglages', dessiner);
+  on('selection-batiments', (liste) => { selectionCourante = liste || []; });
   obtenirCarte().on('click', (e) => {
     if (!placementArme) return;
     const f = placementArme;

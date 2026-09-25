@@ -15,6 +15,8 @@ export const etat = {
     aretes: true,
     courseSoleil: false,
     nuagesReels: true,
+    quartiers: true,
+    etiquettesLieux: true,
   },
 };
 

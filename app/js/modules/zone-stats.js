@@ -9,6 +9,7 @@ import { versCss } from '../lib/couleurs.js';
 import { enregistrerFichier } from '../api.js';
 import { notifier } from '../ui/notifications.js';
 import { entier, decimal, surface, html, echapper, pluriel } from '../ui/format.js';
+import { listeQuartiers, repartitionZone } from './quartiers.js';
 
 function barres(valeurs, libelles, couleur = '#d2601a') {
   const max = Math.max(1, ...valeurs);
@@ -44,6 +45,7 @@ function rendre(conteneur) {
   const s = etat.zone.stats;
   const epoques = EPOQUES.map(([nom, c]) => [nom, s.epoques.get(nom) || 0, c]).filter((e) => e[1] > 0);
   const usages = [...s.usages.entries()].sort((a, b) => b[1] - a[1]);
+  const quartiers = listeQuartiers().length ? repartitionZone(etat.zone) : [];
   const el = html(`<div>
     <div class="section">
       <h3>${echapper(etat.zone.nom)}</h3>
@@ -73,6 +75,11 @@ function rendre(conteneur) {
       <h3>Usages (part de l'emprise)</h3>
       <table class="tableau">${usages.map(([u, v]) => `<tr><th>${echapper(u)}</th><td>${Math.round((v / (s.emprise || 1)) * 100)} %</td></tr>`).join('')}</table>
     </div>
+    ${quartiers.length ? `<div class="section">
+      <h3>Quartiers (part des bâtiments)</h3>
+      <table class="tableau">${quartiers.slice(0, 6).map((q) => `<tr><th>${echapper(q.nom)}${q.commune && q.commune !== 'Nantes' ? ` <small>(${echapper(q.commune)})</small>` : ''}</th>
+        <td>${q.part < 0.01 ? '< 1' : Math.round(q.part * 100)} %</td></tr>`).join('')}</table>
+    </div>` : ''}
     <div class="section">
       <h3>Origine des hauteurs</h3>
       <table class="tableau">${[...s.sourcesH.entries()].sort((a, b) => b[1] - a[1]).map(([k, v]) =>

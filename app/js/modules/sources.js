@@ -15,6 +15,8 @@ const DONNEES = [
   ['Transports Naolib (horaires, temps réel)', 'Nantes Métropole / transport.data.gouv.fr', 'ODbL', 'https://transport.data.gouv.fr'],
   ['Vélos en libre-service Naolib', 'JCDecaux (flux GBFS)', 'Licence Ouverte / ODbL', 'https://transport.data.gouv.fr'],
   ['Calendrier scolaire', 'Ministère de l\'Éducation nationale', 'Licence Ouverte 2.0', 'https://data.education.gouv.fr'],
+  ['Quartiers des communes', 'Nantes Métropole — données ouvertes', 'ODbL', 'https://data.nantesmetropole.fr'],
+  ['Fiches, secteurs et parcours', 'Rédaction de l\'atlas (à relire et compléter) ; positions OpenStreetMap', 'CC BY-SA 4.0 (textes)', 'https://www.openstreetmap.org/copyright'],
 ];
 
 async function rendre(conteneur) {

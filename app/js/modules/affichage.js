@@ -56,6 +56,8 @@ function rendre(conteneur) {
       ${interrupteur('nuagesReels', 'Nuages réels', 'La nébulosité prévue ou observée adoucit le soleil et les ombres')}
       ${interrupteur('contexte3d', 'Bâtiments hors zone en 3D', 'Volumes simplifiés du fond de carte')}
       ${interrupteur('etiquettes', 'Noms des rues et des lieux')}
+      ${interrupteur('etiquettesLieux', 'Sites remarquables et projets', 'Pastilles et noms des lieux de l\'atlas')}
+      ${interrupteur('quartiers', 'Limites des quartiers', 'Quartiers de Nantes et des communes voisines')}
       ${interrupteur('pictogrammes', 'Commerces et services', 'Pictogrammes du fond de carte OpenStreetMap')}
     </div>
     <div class="section">

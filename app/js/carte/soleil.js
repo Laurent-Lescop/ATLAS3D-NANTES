@@ -35,6 +35,13 @@ function centre() {
   return etat.zone?.rect.centre || NANTES;
 }
 
+// Heures de lever et de coucher du soleil (minutes, heure de Paris) pour le jour choisi.
+export function heuresSoleil() {
+  const [lon, lat] = centre();
+  const h = SunCalc.getTimes(instantCourant(), lat, lon);
+  return { lever: minutesParis(h.sunrise), coucher: minutesParis(h.sunset), midi: minutesParis(h.solarNoon) };
+}
+
 export function positionSoleil(date, [lon, lat] = centre()) {
   const p = SunCalc.getPosition(date, lat, lon);
   return { azimut: p.azimuth, hauteur: p.altitude };

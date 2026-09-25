@@ -114,7 +114,63 @@ sur la carte (une zone d'étude doit être ouverte).
 Un fichier d'essai est fourni : `tools/exemples/projet-demonstration.ifc` (projet **fictif**,
 géoréférencé sur l'île de Nantes).
 
+### Quartiers, secteurs et parcours
+
+- **Quartiers** : les limites et les noms des quartiers de Nantes et des communes voisines
+  (Nantes Métropole) s'affichent sur la carte (réglable dans *Affichage*). Le panneau *Zone*
+  indique la répartition de la zone étudiée entre quartiers, et une zone libre prend le nom du
+  quartier où elle se trouve.
+- **Secteurs prédéfinis** (liste du cadre de sélection) : centre historique, Graslin – Commerce,
+  île de Nantes, Quartier de la Création, Beaulieu, gare – Euronantes – Malakoff, Bas-Chantenay,
+  rive sud (Trentemoult – Pirmil), Rezé – Maison radieuse ; ainsi que chacun des quartiers de
+  Nantes et de Rezé.
+- **Parcours commentés** (panneau *Parcours*) : « Au fil du XVIIIe siècle », « L'île de Nantes, des
+  chantiers à la création », « Architectures des XXe et XXIe siècles ». Chaque parcours charge sa
+  zone, puis enchaîne les étapes : mouvement de caméra, heure du jour (jusqu'au coucher du
+  soleil), commentaire et lien vers la fiche du lieu. Lecture pas à pas ou automatique ; toucher
+  la carte met la lecture en pause.
+- **Sites remarquables** : 26 fiches (patrimoine, patrimoine industriel, architecture
+  contemporaine, parcs, quartiers, projets urbains), chacune illustrée d'une vue de l'atlas.
+  Les bâtiments associés ressortent en cuivre dans la maquette. Pour associer d'autres bâtiments
+  à un site : sélectionnez-les (Maj + clic), ouvrez la fiche du site, puis *Associer la sélection*.
+
+Les textes des fiches et des parcours sont une **première rédaction, à relire et compléter** :
+dates et attributions ont été vérifiées avec soin mais méritent une relecture, notamment pour les
+projets en cours (nouveau CHU, Pirmil-les-Isles), dont le calendrier évolue.
+
 L'adresse de la page mémorise la zone : elle peut être mise en favori (`#zone=…&etude`).
+
+### Écrire ou modifier le contenu éditorial
+
+Tout se modifie depuis l'atlas (bouton *Modifier la fiche*) ou directement dans les fichiers :
+
+| Fichier | Contenu |
+|---|---|
+| `data/poi/index.json` | liste des sites : `id`, `titre`, `etiquette` (nom court sur la carte), `categorie`, `statut` (existant, travaux, projet, abandonne), `position` [lon, lat], `batiments` (identifiants OSM, ex. `w28379422`), `secteur`, `resume`, `vue` (caméra), `hauteur` (m, pour placer la pastille) |
+| `data/poi/fiches/<id>.md` | fiche en Markdown, précédée d'un en-tête (`titre`, `architectes`, `maitreOuvrage`, `annee`, `programme`, `surface`, `hauteur`, `adresse`, `liens`, `images`, `sources`) |
+| `data/poi/medias/<id>/` | images de la fiche (JPEG, PNG, WebP) |
+| `data/editorial/secteurs.json` | secteurs prédéfinis : `cadre` = centre, largeur, hauteur (m), angle (° depuis l'est) |
+| `data/editorial/parcours.json` | parcours : `cadre` de la zone, puis `etapes` (`titre`, `texte` en Markdown, `lieu`, `camera` {centre, zoom, pitch, bearing}, `heure` en minutes ou `lever` / `midi` / `coucher`) |
+
+Exemple d'en-tête de fiche :
+
+```
+---
+titre: Passage Pommeraye
+statut: existant
+categorie: Patrimoine
+architectes: Jean-Baptiste Buron, Hippolyte Durand-Gasselin
+annee: 1840-1843
+liens:
+  - titre: Wikipédia
+    url: https://fr.wikipedia.org/wiki/Passage_Pommeraye
+images:
+  - src: medias/passage-pommeraye/vue-atlas.jpg
+    legende: Vue de l'atlas
+    credit: Atlas 3D Nantes
+---
+Texte de la fiche en **Markdown**…
+```
 
 ## Données
 
@@ -130,6 +186,8 @@ L'adresse de la page mémorise la zone : elle peut être mise en favori (`#zone=
 | Fluidité du trafic, parkings | Nantes Métropole — données ouvertes | ODbL |
 | Vélos en libre-service | JCDecaux (flux GBFS) | voir le fournisseur |
 | Calendrier scolaire | Ministère de l'Éducation nationale | Licence Ouverte 2.0 |
+| Quartiers des communes | Nantes Métropole — données ouvertes | ODbL |
+| Fiches, secteurs, parcours | Rédaction de l'atlas ; positions et bâtiments OpenStreetMap | textes CC BY-SA 4.0 |
 
 Le pack local couvre **Nantes, Rezé et leurs abords** (emprise −1,66 / 47,15 / −1,46 / 47,31) :
 230 760 bâtiments. Hors de cette emprise, les bâtiments sont téléchargés à la demande quand une
@@ -153,7 +211,7 @@ data/batiments/       bâtiments en cellules GeoJSON compressées + index et den
 data/climat/          normales et roses des vents (Open-Meteo, 2016-2025)
 data/mobilite/        horaires Naolib (GTFS), tronçons de trafic, parkings, stations vélo
 data/enregistrements/ relevés temps réel et profils observés (créés à l'usage)
-data/editorial/       secteurs, contenus
+data/editorial/       quartiers, secteurs prédéfinis, parcours commentés
 data/poi/             sites remarquables : index.json, fiches Markdown (fiches/), images (medias/)
 data/projets/         projets importés : un dossier par projet (projet.json, modele.glb, source.ifc)
 data/zones/           zones enregistrées depuis l'atlas
@@ -172,6 +230,8 @@ node tools/preparer-fond.mjs         # fond de carte (nécessite l'outil pmtiles
 node tools/preparer-batiments.mjs    # bâtiments OSM + BD TOPO → data/batiments
 node tools/preparer-climat.mjs       # normales et roses des vents → data/climat
 node tools/preparer-mobilites.mjs    # GTFS Naolib, trafic, parkings, vélos → data/mobilite
+node tools/preparer-editorial.mjs    # quartiers de Nantes Métropole → data/editorial
+node tools/capturer-vignettes.mjs    # vues 3D des sites pour les fiches → data/poi/medias
 npm run serveur                      # recompile les exécutables du dossier bin/
 npm test                             # test de bout en bout dans Chromium (captures dans tools/.cache)
 ```

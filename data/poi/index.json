@@ -2,14 +2,550 @@
  "version": 1,
  "lieux": [
   {
+   "id": "chateau-des-ducs",
+   "titre": "Château des ducs de Bretagne",
+   "categorie": "Patrimoine",
+   "statut": "existant",
+   "position": [
+    -1.54938,
+    47.21623
+   ],
+   "batiments": [
+    "r17367543",
+    "r17367654",
+    "r17369384",
+    "r17369402",
+    "r17369408",
+    "r17369492",
+    "r17369522",
+    "r17369559",
+    "r17369623",
+    "r17369788",
+    "r17369964",
+    "r17369992",
+    "r17370004",
+    "r17370071",
+    "r17370109",
+    "r17380803",
+    "r17383391",
+    "i302931844"
+   ],
+   "secteur": "centre-historique",
+   "resume": "Forteresse et palais ducal du XVe siècle, musée d'histoire de Nantes",
+   "vue": {
+    "centre": [
+     -1.5494,
+     47.2162
+    ],
+    "zoom": 17.1,
+    "pitch": 58,
+    "bearing": 35
+   },
+   "etiquette": "Château des ducs"
+  },
+  {
+   "id": "cathedrale",
+   "titre": "Cathédrale Saint-Pierre-et-Saint-Paul",
+   "categorie": "Patrimoine",
+   "statut": "existant",
+   "position": [
+    -1.55026,
+    47.21838
+   ],
+   "batiments": [
+    "w28379422"
+   ],
+   "secteur": "centre-historique",
+   "resume": "Gothique flamboyant, 457 ans de chantier (1434-1891)",
+   "vue": {
+    "centre": [
+     -1.5503,
+     47.2183
+    ],
+    "zoom": 17.4,
+    "pitch": 60,
+    "bearing": 70
+   },
+   "etiquette": "Cathédrale"
+  },
+  {
+   "id": "ile-feydeau",
+   "titre": "Île Feydeau",
+   "categorie": "Quartiers",
+   "statut": "existant",
+   "position": [
+    -1.5545,
+    47.2128
+   ],
+   "batiments": [],
+   "secteur": "centre-historique",
+   "resume": "Ancienne île des armateurs du XVIIIe siècle, mascarons et balcons",
+   "hauteur": 22,
+   "vue": {
+    "centre": [
+     -1.5545,
+     47.2128
+    ],
+    "zoom": 16.8,
+    "pitch": 58,
+    "bearing": 20
+   }
+  },
+  {
+   "id": "place-royale",
+   "titre": "Place Royale",
+   "categorie": "Patrimoine",
+   "statut": "existant",
+   "position": [
+    -1.5585,
+    47.21445
+   ],
+   "batiments": [],
+   "secteur": "graslin-commerce",
+   "resume": "Place néoclassique de Mathurin Crucy, reconstruite après 1943",
+   "hauteur": 20
+  },
+  {
+   "id": "theatre-graslin",
+   "titre": "Théâtre Graslin",
+   "categorie": "Patrimoine",
+   "statut": "existant",
+   "position": [
+    -1.56221,
+    47.21356
+   ],
+   "batiments": [
+    "w28770310"
+   ],
+   "secteur": "graslin-commerce",
+   "resume": "Théâtre de Mathurin Crucy (1788), scène de l'opéra"
+  },
+  {
+   "id": "passage-pommeraye",
+   "titre": "Passage Pommeraye",
+   "categorie": "Patrimoine",
+   "statut": "existant",
+   "position": [
+    -1.5597,
+    47.2135
+   ],
+   "batiments": [
+    "r4016610"
+   ],
+   "secteur": "graslin-commerce",
+   "resume": "Galerie marchande sur trois niveaux (1843)"
+  },
+  {
+   "id": "tour-bretagne",
+   "titre": "Tour Bretagne",
+   "categorie": "Architecture contemporaine",
+   "statut": "existant",
+   "position": [
+    -1.55823,
+    47.21761
+   ],
+   "batiments": [
+    "w332647397"
+   ],
+   "secteur": "centre-historique",
+   "resume": "Immeuble de grande hauteur des années 1970, belvédère « Le Nid »",
+   "vue": {
+    "centre": [
+     -1.5582,
+     47.2168
+    ],
+    "zoom": 16.3,
+    "pitch": 68,
+    "bearing": 10
+   }
+  },
+  {
+   "id": "lieu-unique",
+   "titre": "Le Lieu Unique et la tour LU",
+   "categorie": "Patrimoine industriel",
+   "statut": "existant",
+   "position": [
+    -1.54584,
+    47.21536
+   ],
+   "batiments": [
+    "w32428111"
+   ],
+   "secteur": "euronantes",
+   "resume": "Ancienne biscuiterie LU devenue scène nationale",
+   "etiquette": "Lieu Unique"
+  },
+  {
+   "id": "musee-d-arts",
+   "titre": "Musée d'arts de Nantes",
+   "categorie": "Architecture contemporaine",
+   "statut": "existant",
+   "position": [
+    -1.54781,
+    47.21933
+   ],
+   "batiments": [
+    "w85437857",
+    "w85438059",
+    "w85440134",
+    "w503589138",
+    "w510424311",
+    "w510494043",
+    "w559284162"
+   ],
+   "secteur": "centre-historique",
+   "resume": "Palais des beaux-arts (1900) et extension du « Cube » (2017)",
+   "etiquette": "Musée d'arts"
+  },
+  {
+   "id": "memorial-abolition-esclavage",
+   "titre": "Mémorial de l'abolition de l'esclavage",
+   "categorie": "Architecture contemporaine",
+   "statut": "existant",
+   "position": [
+    -1.5636,
+    47.20966
+   ],
+   "batiments": [],
+   "secteur": "graslin-commerce",
+   "resume": "Parcours de mémoire le long du quai de la Fosse (2012)",
+   "hauteur": 6,
+   "vue": {
+    "centre": [
+     -1.5636,
+     47.2097
+    ],
+    "zoom": 17.2,
+    "pitch": 55,
+    "bearing": -30
+   },
+   "etiquette": "Mémorial de l'abolition"
+  },
+  {
+   "id": "gare-de-nantes",
+   "titre": "Gare de Nantes",
+   "categorie": "Architecture contemporaine",
+   "statut": "existant",
+   "position": [
+    -1.54237,
+    47.21678
+   ],
+   "batiments": [
+    "w762088042",
+    "w142292487",
+    "w310066165"
+   ],
+   "secteur": "euronantes",
+   "resume": "Mezzanine traversante de Rudy Ricciotti (2020)"
+  },
+  {
    "id": "machines-de-l-ile",
    "titre": "Les Machines de l'île",
    "categorie": "Patrimoine industriel",
    "statut": "existant",
-   "position": [-1.56433, 47.20641],
+   "position": [
+    -1.56433,
+    47.20641
+   ],
+   "batiments": [
+    "w32488638"
+   ],
+   "secteur": "quartier-creation",
+   "resume": "Nefs Dubigeon, Grand Éléphant, Galerie des machines",
+   "etiquette": "Machines de l'île",
+   "vue": {
+    "centre": [
+     -1.565,
+     47.205
+    ],
+    "zoom": 16.8,
+    "pitch": 58,
+    "bearing": 25
+   }
+  },
+  {
+   "id": "carrousel-des-mondes-marins",
+   "titre": "Carrousel des Mondes Marins",
+   "categorie": "Patrimoine industriel",
+   "statut": "existant",
+   "position": [
+    -1.56778,
+    47.2059
+   ],
+   "batiments": [
+    "w304978710"
+   ],
+   "secteur": "quartier-creation",
+   "resume": "Manège monumental des Machines de l'île (2012)",
+   "etiquette": "Carrousel"
+  },
+  {
+   "id": "grues-titan",
+   "titre": "Grues Titan",
+   "categorie": "Patrimoine industriel",
+   "statut": "existant",
+   "position": [
+    -1.56974,
+    47.2051
+   ],
    "batiments": [],
-   "secteur": "ile-de-nantes",
-   "resume": "Nefs Dubigeon, Grand Éléphant, Galerie des machines"
+   "secteur": "quartier-creation",
+   "resume": "Grues des anciens chantiers navals, monuments historiques",
+   "hauteur": 40
+  },
+  {
+   "id": "hangar-a-bananes",
+   "titre": "Hangar à bananes et Anneaux de Buren",
+   "categorie": "Patrimoine industriel",
+   "statut": "existant",
+   "position": [
+    -1.57354,
+    47.20033
+   ],
+   "batiments": [
+    "w27544413"
+   ],
+   "secteur": "quartier-creation",
+   "resume": "Pointe ouest de l'île : hangar portuaire et œuvre de Daniel Buren",
+   "vue": {
+    "centre": [
+     -1.5728,
+     47.2012
+    ],
+    "zoom": 16.9,
+    "pitch": 60,
+    "bearing": 60
+   },
+   "etiquette": "Hangar à bananes"
+  },
+  {
+   "id": "halles-alstom",
+   "titre": "Halles Alstom",
+   "categorie": "Patrimoine industriel",
+   "statut": "existant",
+   "position": [
+    -1.5605,
+    47.2064
+   ],
+   "batiments": [
+    "w538609913",
+    "w280018014",
+    "w280266539",
+    "w351896336"
+   ],
+   "secteur": "quartier-creation",
+   "resume": "Halles industrielles reconverties : beaux-arts, université, création"
+  },
+  {
+   "id": "ensa-nantes",
+   "titre": "École nationale supérieure d'architecture",
+   "categorie": "Architecture contemporaine",
+   "statut": "existant",
+   "position": [
+    -1.55749,
+    47.20717
+   ],
+   "batiments": [
+    "w1547292131"
+   ],
+   "secteur": "quartier-creation",
+   "resume": "Lacaton & Vassal (2009) : des plateaux libres et une rampe jusqu'au toit",
+   "etiquette": "École d'architecture"
+  },
+  {
+   "id": "palais-de-justice",
+   "titre": "Palais de justice",
+   "categorie": "Architecture contemporaine",
+   "statut": "existant",
+   "position": [
+    -1.5615,
+    47.2079
+   ],
+   "batiments": [
+    "w1348720974"
+   ],
+   "secteur": "quartier-creation",
+   "resume": "Jean Nouvel (2000), face à la Loire"
+  },
+  {
+   "id": "quartier-creation",
+   "titre": "Quartier de la Création",
+   "categorie": "Quartiers",
+   "statut": "existant",
+   "position": [
+    -1.5615,
+    47.2055
+   ],
+   "batiments": [],
+   "secteur": "quartier-creation",
+   "resume": "Pointe ouest de l'île de Nantes, anciens chantiers navals",
+   "hauteur": 40,
+   "vue": {
+    "centre": [
+     -1.5625,
+     47.2055
+    ],
+    "zoom": 15.6,
+    "pitch": 55,
+    "bearing": 20
+   }
+  },
+  {
+   "id": "beaulieu",
+   "titre": "Beaulieu",
+   "categorie": "Quartiers",
+   "statut": "existant",
+   "position": [
+    -1.53551,
+    47.20517
+   ],
+   "batiments": [
+    "w141481265"
+   ],
+   "secteur": "beaulieu",
+   "resume": "Quartier des années 1970 à l'est de l'île de Nantes",
+   "hauteur": 40,
+   "vue": {
+    "centre": [
+     -1.5355,
+     47.2055
+    ],
+    "zoom": 15.8,
+    "pitch": 55,
+    "bearing": 20
+   }
+  },
+  {
+   "id": "nouveau-chu",
+   "titre": "Nouveau CHU de Nantes",
+   "categorie": "Projets urbains",
+   "statut": "travaux",
+   "position": [
+    -1.55883,
+    47.20032
+   ],
+   "batiments": [],
+   "secteur": "quartier-creation",
+   "resume": "Futur hôpital regroupant l'Hôtel-Dieu et l'hôpital Nord Laennec",
+   "hauteur": 30,
+   "vue": {
+    "centre": [
+     -1.5588,
+     47.2003
+    ],
+    "zoom": 16.2,
+    "pitch": 55,
+    "bearing": 10
+   },
+   "etiquette": "Nouveau CHU"
+  },
+  {
+   "id": "pirmil-les-isles",
+   "titre": "Pirmil-les-Isles",
+   "categorie": "Projets urbains",
+   "statut": "projet",
+   "position": [
+    -1.5395,
+    47.1945
+   ],
+   "batiments": [],
+   "secteur": "rive-sud",
+   "resume": "Projet urbain sur la rive sud de la Loire, entre Nantes et Rezé",
+   "hauteur": 20,
+   "vue": {
+    "centre": [
+     -1.5395,
+     47.195
+    ],
+    "zoom": 15.4,
+    "pitch": 50,
+    "bearing": 0
+   }
+  },
+  {
+   "id": "trentemoult",
+   "titre": "Trentemoult",
+   "categorie": "Quartiers",
+   "statut": "existant",
+   "position": [
+    -1.58235,
+    47.19432
+   ],
+   "batiments": [],
+   "secteur": "rive-sud",
+   "resume": "Ancien village de pêcheurs et de cap-horniers, à Rezé",
+   "hauteur": 14,
+   "vue": {
+    "centre": [
+     -1.5815,
+     47.1948
+    ],
+    "zoom": 16.6,
+    "pitch": 58,
+    "bearing": 0
+   }
+  },
+  {
+   "id": "maison-radieuse",
+   "titre": "Maison radieuse",
+   "categorie": "Architecture contemporaine",
+   "statut": "existant",
+   "position": [
+    -1.56826,
+    47.18862
+   ],
+   "batiments": [
+    "w84709990"
+   ],
+   "secteur": "reze",
+   "resume": "Unité d'habitation de Le Corbusier à Rezé (1955)",
+   "vue": {
+    "centre": [
+     -1.5683,
+     47.188
+    ],
+    "zoom": 16.6,
+    "pitch": 62,
+    "bearing": -10
+   }
+  },
+  {
+   "id": "jardin-des-plantes",
+   "titre": "Jardin des Plantes",
+   "categorie": "Parcs et jardins",
+   "statut": "existant",
+   "position": [
+    -1.54332,
+    47.21969
+   ],
+   "batiments": [],
+   "secteur": "euronantes",
+   "resume": "Jardin botanique face à la gare, serres et camélias",
+   "hauteur": 12
+  },
+  {
+   "id": "jardin-extraordinaire",
+   "titre": "Carrière Misery et Jardin extraordinaire",
+   "categorie": "Parcs et jardins",
+   "statut": "existant",
+   "position": [
+    -1.57995,
+    47.20084
+   ],
+   "batiments": [],
+   "secteur": "bas-chantenay",
+   "resume": "Ancienne carrière du Bas-Chantenay devenue jardin (2019)",
+   "hauteur": 20,
+   "vue": {
+    "centre": [
+     -1.5795,
+     47.2
+    ],
+    "zoom": 16.5,
+    "pitch": 60,
+    "bearing": 150
+   },
+   "etiquette": "Jardin extraordinaire"
   }
  ]
 }

@@ -6,7 +6,8 @@
 // Usage : osm-lieux -pbf f.osm.pbf -bbox o,s,e,n -requetes requetes.json -sortie lieux.json
 //
 // requetes.json : [{"cle": "chateau", "nom": "Château des ducs de Bretagne"},
-//                  {"cle": "ile", "balises": {"place": "island", "name": "Île de Nantes"}}]
+//
+//	{"cle": "ile", "balises": {"place": "island", "name": "Île de Nantes"}}]
 package main
 
 import (
@@ -28,9 +29,10 @@ import (
 )
 
 type requete struct {
-	Cle     string            `json:"cle"`
-	Nom     string            `json:"nom"`
-	Balises map[string]string `json:"balises"`
+	Cle      string            `json:"cle"`
+	Nom      string            `json:"nom"`
+	Contient string            `json:"contient"` // recherche partielle sur le nom
+	Balises  map[string]string `json:"balises"`
 }
 
 type resultat struct {
@@ -52,6 +54,15 @@ func simplifier(s string) string {
 }
 
 func correspond(q requete, t osm.Tags) bool {
+	if q.Contient != "" {
+		c := simplifier(q.Contient)
+		for _, k := range []string{"name", "name:fr", "official_name", "alt_name"} {
+			if v := t.Find(k); v != "" && strings.Contains(simplifier(v), c) {
+				return true
+			}
+		}
+		return false
+	}
 	if q.Nom != "" {
 		n := simplifier(q.Nom)
 		for _, k := range []string{"name", "name:fr", "official_name", "alt_name"} {

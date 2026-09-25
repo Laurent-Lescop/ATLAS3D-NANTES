@@ -9,7 +9,7 @@ import {
 } from './carte/selection.js';
 import { chargerIndexBatiments, chargerBatiments } from './carte/zone.js';
 import { initBatiments3D, afficherZone, viderBatiments } from './carte/batiments3d.js';
-import { initPanneaux, fermerFiche, enregistrerPanneau } from './ui/panneaux.js';
+import { initPanneaux, fermerFiche } from './ui/panneaux.js';
 import { chargement, finChargement, notifier, progression } from './ui/notifications.js';
 import { masquerInfobulle } from './ui/infobulle.js';
 import { surveillerConnexion, lireJSON } from './api.js';
@@ -20,8 +20,9 @@ import { initSources } from './modules/sources.js';
 import { initClimat } from './modules/climat.js';
 import { initMobilites } from './modules/mobilites.js';
 import { initLieux } from './modules/lieux.js';
+import { initQuartiers, quartierDe, listeQuartiers } from './modules/quartiers.js';
+import { initParcours } from './modules/parcours.js';
 import { capAligne, masqueExterieur, polygoneCadre } from './lib/geo.js';
-import { html } from './ui/format.js';
 
 const CADRE_DEFAUT = { centre: [-1.5425, 47.2065], largeur: 5200, hauteur: 1500, angle: 12 };
 let carte = null;
@@ -74,6 +75,12 @@ function cadrerZone(rect, { duree = 2200 } = {}) {
 
 // --- Zone d'étude --------------------------------------------------------------------
 
+function nomParQuartier(rect) {
+  const q = quartierDe(rect.centre);
+  if (!q) return 'Zone libre';
+  return q.commune === 'Nantes' ? `Secteur ${q.nom}` : `${q.commune} — ${q.nom}`;
+}
+
 function nomSecteurChoisi() {
   const opt = document.getElementById('selection-secteur').selectedOptions[0];
   return opt?.value ? opt.textContent : null;
@@ -110,7 +117,7 @@ async function validerZone(nom) {
       return;
     }
     await etudier({
-      nom: nom || nomSecteurChoisi() || 'Zone libre',
+      nom: nom || nomSecteurChoisi() || nomParQuartier(rect),
       rect,
       batiments: res.batiments,
       parties: res.parties,
@@ -148,16 +155,52 @@ function modifierZone() {
 
 function remplirSecteurs() {
   const select = document.getElementById('selection-secteur');
+  const groupe = document.createElement('optgroup');
+  groupe.label = 'Secteurs de l\'atlas';
   for (const s of secteurs) {
     const o = document.createElement('option');
     o.value = s.id;
     o.textContent = s.nom;
-    select.appendChild(o);
+    if (s.description) o.title = s.description;
+    groupe.appendChild(o);
   }
+  select.appendChild(groupe);
   select.addEventListener('change', () => {
     const s = secteurs.find((x) => x.id === select.value);
+    const desc = document.getElementById('selection-secteur-desc');
+    desc.textContent = s?.description || '';
+    desc.hidden = !s?.description;
     if (s) definirCadre(s.cadre);
   });
+}
+
+// Quartiers de Nantes et de Rezé (couverts par le pack local) comme cadres prédéfinis.
+function remplirQuartiers() {
+  const select = document.getElementById('selection-secteur');
+  for (const commune of ['Nantes', 'Rezé']) {
+    const liste = listeQuartiers().filter((q) => q.properties.commune === commune);
+    if (!liste.length) continue;
+    const groupe = document.createElement('optgroup');
+    groupe.label = `Quartiers de ${commune}`;
+    for (const q of liste) {
+      const [o, s, e, n] = q.bbox;
+      const centre = [(o + e) / 2, (s + n) / 2];
+      const k = Math.cos((centre[1] * Math.PI) / 180);
+      const cadre = {
+        centre,
+        largeur: Math.min(6000, Math.round((e - o) * 111320 * k + 150)),
+        hauteur: Math.min(6000, Math.round((n - s) * 110540 + 150)),
+        angle: 0,
+      };
+      const id = `quartier-${q.properties.id}`;
+      secteurs.push({ id, nom: `${q.properties.nom}`, cadre });
+      const opt = document.createElement('option');
+      opt.value = id;
+      opt.textContent = q.properties.nom;
+      groupe.appendChild(opt);
+    }
+    select.appendChild(groupe);
+  }
 }
 
 // --- Connexion ----------------------------------------------------------------------------
@@ -169,11 +212,6 @@ function majBadge(enLigne) {
   b.title = enLigne
     ? 'Données temps réel actives (météo, trafic, transports).'
     : 'Pas de connexion : l\'atlas utilise les données locales, les dernières valeurs connues et des valeurs indicatives.';
-}
-
-// Panneaux des étapes suivantes, en attendant leurs modules.
-function panneauAVenir(nom, titre, texte) {
-  enregistrerPanneau(nom, { titre, rendre: (c) => c.appendChild(html(`<p class="aide">${texte}</p>`)) });
 }
 
 // --- Démarrage -------------------------------------------------------------------------
@@ -192,7 +230,6 @@ async function demarrer() {
   initZoneStats();
   initReglages();
   initSources();
-  panneauAVenir('parcours', 'Parcours', 'Les secteurs et parcours commentés arrivent avec le lot 5.');
 
   chargement('Index des bâtiments…', 0.65);
   const index = await chargerIndexBatiments();
@@ -210,7 +247,15 @@ async function demarrer() {
   surveillerConnexion();
   initClimat();
   initMobilites();
+  await initQuartiers();
+  remplirQuartiers();
   await initLieux().catch((e) => console.error('lieux', e));
+  await initParcours();
+  on('etudier-cadre', async ({ cadre, nom }) => {
+    document.getElementById('selection-secteur').value = '';
+    definirCadre(cadre);
+    await validerZone(nom);
+  });
   on('connexion', majBadge);
 
   document.getElementById('btn-zone-valider').addEventListener('click', () => validerZone());

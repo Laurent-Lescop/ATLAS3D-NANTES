@@ -28,7 +28,7 @@ const CHAMPS = [
 
 marked.setOptions({ gfm: true, breaks: false });
 
-function markdown(texte) {
+export function markdown(texte) {
   return DOMPurify.sanitize(marked.parse(texte || ''), { ADD_ATTR: ['target'] });
 }
 

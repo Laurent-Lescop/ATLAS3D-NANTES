@@ -362,3 +362,16 @@ details.tableau-donnees summary { cursor: pointer; font-size: 12px; color: var(-
   .temps-raccourcis { display: none; }
   .barre-actions .bouton span { display: none; }
 }
+
+/* Parcours commentés */
+.liste-parcours { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 12px; }
+.liste-parcours li { padding: 12px 14px; border: 1px solid var(--ligne); border-radius: 12px; background: var(--papier-2); }
+.liste-parcours h3 { margin: 0 0 4px; font-size: 14px; text-transform: none; letter-spacing: 0; color: var(--encre); }
+.liste-parcours p { margin: 4px 0; font-size: 12.5px; color: var(--encre-2); }
+.liste-parcours .boutons-fiche { border-top: 0; padding-top: 0; margin-top: 8px; }
+.parcours-progression { display: flex; gap: 4px; margin-bottom: 10px; }
+.parcours-progression button { flex: 1; height: 6px; min-width: 10px; padding: 0; border: 0; border-radius: 3px; background: var(--ligne); cursor: pointer; }
+.parcours-progression button.vu { background: color-mix(in srgb, var(--accent) 45%, transparent); }
+.parcours-progression button.actif { background: var(--accent); }
+.parcours-numero { margin: 0; font-size: 11px; text-transform: uppercase; letter-spacing: .12em; color: var(--encre-3); font-weight: 700; }
+.parcours-etape h3 { margin: 4px 0 8px; font-size: 16px; text-transform: none; letter-spacing: 0; color: var(--encre); }
