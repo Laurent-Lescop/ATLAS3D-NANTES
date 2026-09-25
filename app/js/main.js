@@ -19,6 +19,7 @@ import { initReglages } from './modules/reglages.js';
 import { initSources } from './modules/sources.js';
 import { initClimat } from './modules/climat.js';
 import { initMobilites } from './modules/mobilites.js';
+import { initLieux } from './modules/lieux.js';
 import { capAligne, masqueExterieur, polygoneCadre } from './lib/geo.js';
 import { html } from './ui/format.js';
 
@@ -191,7 +192,6 @@ async function demarrer() {
   initZoneStats();
   initReglages();
   initSources();
-  panneauAVenir('lieux', 'Sites et projets', 'Les fiches et les projets IFC arrivent avec le lot 4.');
   panneauAVenir('parcours', 'Parcours', 'Les secteurs et parcours commentés arrivent avec le lot 5.');
 
   chargement('Index des bâtiments…', 0.65);
@@ -210,6 +210,7 @@ async function demarrer() {
   surveillerConnexion();
   initClimat();
   initMobilites();
+  await initLieux().catch((e) => console.error('lieux', e));
   on('connexion', majBadge);
 
   document.getElementById('btn-zone-valider').addEventListener('click', () => validerZone());

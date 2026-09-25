@@ -100,13 +100,28 @@ func (a *App) isLocalOrigin(o string) bool {
 	return false
 }
 
+func isWritable(clean string) bool {
+	first := strings.SplitN(strings.TrimPrefix(clean, "/"), "/", 2)[0]
+	for _, d := range writableDirs {
+		if first == d {
+			return true
+		}
+	}
+	return false
+}
+
 // staticHandler sert un dossier. Si un fichier « x.gz » précompressé existe à
 // côté de « x », il est servi avec Content-Encoding: gzip.
 func staticHandler(dir, cacheControl string) http.Handler {
 	fs := http.FileServer(http.Dir(dir))
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		clean := path.Clean("/" + r.URL.Path)
-		w.Header().Set("Cache-Control", cacheControl)
+		if isWritable(clean) {
+			// Fiches, projets, zones : modifiables depuis l'atlas, toujours revalidés.
+			w.Header().Set("Cache-Control", "no-cache")
+		} else {
+			w.Header().Set("Cache-Control", cacheControl)
+		}
 
 		full := filepath.Join(dir, filepath.FromSlash(clean))
 		if _, err := os.Stat(full); os.IsNotExist(err) {

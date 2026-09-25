@@ -279,6 +279,21 @@ body[data-ambiance="nuit"] .notification { background: #eef1f6; color: #161b26; 
 .onglets button.actif { color: var(--accent); border-bottom-color: var(--accent); }
 .galerie { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
 .galerie img { width: 100%; aspect-ratio: 4/3; object-fit: cover; border-radius: 8px; cursor: zoom-in; }
+.galerie figure { margin: 0; }
+.galerie figcaption { font-size: 11px; color: var(--encre-2); margin-top: 3px; line-height: 1.35; }
+.zone-avant-apres:not(:empty) { margin-bottom: 10px; }
+.sous-titre { margin: 14px 0 4px; font-size: 11px; text-transform: uppercase; letter-spacing: .12em; color: var(--encre-3); font-weight: 700; }
+.boutons-fiche { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 16px; padding-top: 12px; border-top: 1px solid var(--ligne); }
+.editeur textarea { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 12px; line-height: 1.5; resize: vertical; }
+.liste-images { display: flex; flex-direction: column; gap: 8px; }
+.ligne-image { display: grid; grid-template-columns: 64px 1fr auto; gap: 8px; align-items: start; }
+.ligne-image img { width: 64px; height: 48px; object-fit: cover; border-radius: 6px; }
+.ligne-image div { display: flex; flex-direction: column; gap: 4px; }
+.ligne-image input, .ligne-image select { font: inherit; font-size: 12px; padding: 4px 6px; border: 1px solid var(--ligne); border-radius: 6px; background: var(--papier); color: var(--encre); }
+.visionneuse { position: fixed; inset: 0; z-index: 50; display: grid; place-items: center; padding: 24px; background: rgba(10, 13, 20, .86); cursor: zoom-out; }
+.visionneuse figure { margin: 0; max-width: 100%; max-height: 100%; display: flex; flex-direction: column; align-items: center; gap: 8px; }
+.visionneuse img { max-width: 100%; max-height: calc(100vh - 90px); object-fit: contain; border-radius: 6px; }
+.visionneuse figcaption { color: #eef1f6; font-size: 13px; text-align: center; }
 .liens { list-style: none; padding: 0; margin: 0; }
 .liens li { padding: 6px 0; border-bottom: 1px solid var(--ligne); }
 .liens a { display: inline-flex; gap: 6px; align-items: center; text-decoration: none; }

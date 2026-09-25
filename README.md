@@ -86,6 +86,34 @@ samedis, dimanches et fériés — utilisés ensuite hors connexion. Réglages e
 *Réglages*. Les données de Nantes Métropole sont sous licence ODbL : si vous diffusez la base
 enregistrée, citez les sources et partagez-la sous la même licence.
 
+### Sites et projets
+
+Le panneau *Lieux* rassemble les **sites remarquables** (pastilles orange, bâtiments mis en valeur
+en 3D) et les **projets** (en bleu). Un clic ouvre la fiche : texte, galerie d'images (avec
+comparaison avant / après), données, liens. **Modifier la fiche** ouvre un éditeur (texte en
+Markdown, champs, liens, ajout d'images) ; tout est enregistré dans `data/poi/` ou
+`data/projets/`, sous forme de fichiers lisibles et modifiables à la main.
+
+**Maquettes IFC** : bouton *Importer une maquette IFC* ou glisser-déposer d'un fichier `.ifc`
+sur la carte (une zone d'étude doit être ouverte).
+
+- La conversion se fait dans le navigateur (web-ifc) : l'atlas garde l'enveloppe et la structure
+  (murs, dalles, toitures, façades, menuiseries…) ou, au choix, le détail complet. La maquette
+  est enregistrée en glTF (`modele.glb`, lisible par Blender) à côté du fichier IFC d'origine.
+- **Géoréférencement** : si le fichier contient un `IfcMapConversion` (IFC4) en Lambert-93, en
+  coniques conformes CC42 à CC50, en Lambert II étendu ou en UTM, la maquette est placée
+  automatiquement ; la convergence des méridiens est prise en compte. À défaut, l'atlas utilise
+  les coordonnées de l'`IfcSite`, ou vous demande de la placer. Le rez-de-chaussée est posé au sol
+  de la carte.
+- **Calage** : clic sur la carte pour placer le centre, curseur d'orientation, altitude,
+  échelle ; au clavier, flèches (1 m, Maj : 10 m) et Page préc. / Page suiv. (1°, Maj : 5°).
+- **État actuel / Avec les projets** : dans le second mode, les maquettes s'affichent et les
+  bâtiments existants situés sous leur emprise sont masqués. Les maquettes portent et reçoivent
+  les ombres.
+
+Un fichier d'essai est fourni : `tools/exemples/projet-demonstration.ifc` (projet **fictif**,
+géoréférencé sur l'île de Nantes).
+
 L'adresse de la page mémorise la zone : elle peut être mise en favori (`#zone=…&etude`).
 
 ## Données
@@ -126,6 +154,8 @@ data/climat/          normales et roses des vents (Open-Meteo, 2016-2025)
 data/mobilite/        horaires Naolib (GTFS), tronçons de trafic, parkings, stations vélo
 data/enregistrements/ relevés temps réel et profils observés (créés à l'usage)
 data/editorial/       secteurs, contenus
+data/poi/             sites remarquables : index.json, fiches Markdown (fiches/), images (medias/)
+data/projets/         projets importés : un dossier par projet (projet.json, modele.glb, source.ifc)
 data/zones/           zones enregistrées depuis l'atlas
 server/               code source du serveur local (Go)
 tools/                scripts de préparation des données et de test

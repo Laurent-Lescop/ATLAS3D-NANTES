@@ -1,0 +1,15 @@
+{
+ "version": 1,
+ "lieux": [
+  {
+   "id": "machines-de-l-ile",
+   "titre": "Les Machines de l'île",
+   "categorie": "Patrimoine industriel",
+   "statut": "existant",
+   "position": [-1.56433, 47.20641],
+   "batiments": [],
+   "secteur": "ile-de-nantes",
+   "resume": "Nefs Dubigeon, Grand Éléphant, Galerie des machines"
+  }
+ ]
+}
