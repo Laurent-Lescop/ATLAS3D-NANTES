@@ -1,0 +1,12 @@
+* text=auto
+*.bat text eol=crlf
+*.command text eol=lf
+*.sh text eol=lf
+bin/* binary
+*.pmtiles binary
+*.pbf binary
+*.gz binary
+*.wasm binary
+*.png binary
+*.glb binary
+*.ifc binary

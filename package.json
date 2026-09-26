@@ -1,0 +1,28 @@
+{
+  "name": "atlas-3d-nantes",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Atlas 3D interactif de Nantes — application web locale, fonctionne hors connexion.",
+  "type": "module",
+  "license": "MIT",
+  "scripts": {
+    "vendor": "node tools/copier-librairies.mjs",
+    "donnees": "node tools/preparer-tout.mjs",
+    "donnees:batiments": "node tools/preparer-batiments.mjs",
+    "serveur": "bash tools/compiler-serveur.sh",
+    "test": "node tools/tester.mjs",
+    "vignettes": "node tools/capturer-vignettes.mjs"
+  },
+  "devDependencies": {
+    "@protomaps/basemaps": "^5.7.2",
+    "deck.gl": "9.4.0",
+    "dompurify": "^3.4.16",
+    "maplibre-gl": "6.11.2",
+    "marked": "^18.0.14",
+    "playwright": "^1.63.0",
+    "pmtiles": "^4.5.0",
+    "proj4": "^2.22.0",
+    "suncalc": "^2.0.2",
+    "web-ifc": "0.0.78"
+  }
+}

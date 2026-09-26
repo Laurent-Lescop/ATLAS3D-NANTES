@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Atlas 3D · Nantes</title>
+  <meta name="description" content="Atlas 3D interactif de Nantes : bâtiments, soleil et ombres, climat, mobilités et projets.">
+  <link rel="icon" href="img/icone.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="vendor/maplibre-gl/maplibre-gl.css">
+  <link rel="stylesheet" href="css/atlas.css">
+  <script src="vendor/deck.gl/dist.min.js"></script>
+  <script src="vendor/pmtiles/pmtiles.js"></script>
+  <script src="vendor/proj4/proj4.js"></script>
+  <script type="module" src="js/main.js"></script>
+</head>
+<body data-mode="selection" data-ambiance="jour">
+  <!-- Pictogrammes (dessinés pour l'atlas) -->
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <defs>
+      <symbol id="i-couches" viewBox="0 0 24 24"><path d="M12 3 2.5 8 12 13l9.5-5L12 3Z"/><path d="m2.5 12.5 9.5 5 9.5-5"/><path d="m2.5 16.5 9.5 5 9.5-5"/></symbol>
+      <symbol id="i-soleil" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4.2"/><path d="M12 2v2.5M12 19.5V22M4.2 4.2 6 6M18 18l1.8 1.8M2 12h2.5M19.5 12H22M4.2 19.8 6 18M18 6l1.8-1.8"/></symbol>
+      <symbol id="i-climat" viewBox="0 0 24 24"><path d="M6.5 18.5h10a4 4 0 0 0 .6-7.95A6 6 0 0 0 5.6 11.2 3.7 3.7 0 0 0 6.5 18.5Z"/><path d="M8 21.5l1-1.5M12 21.5l1-1.5M16 21.5l1-1.5"/></symbol>
+      <symbol id="i-mobilite" viewBox="0 0 24 24"><rect x="5" y="3" width="14" height="14" rx="3"/><path d="M5 11h14M8.5 17l-2 4M15.5 17l2 4"/><circle cx="8.5" cy="14" r=".8"/><circle cx="15.5" cy="14" r=".8"/></symbol>
+      <symbol id="i-projet" viewBox="0 0 24 24"><path d="M4 21V9l6-4v16M10 21V3l10 5v13M2 21h20"/><path d="M13 10h4M13 14h4M13 18h4"/></symbol>
+      <symbol id="i-parcours" viewBox="0 0 24 24"><circle cx="6" cy="18" r="2.2"/><circle cx="18" cy="6" r="2.2"/><path d="M8 17c5 0 3-6 8-10"/></symbol>
+      <symbol id="i-stats" viewBox="0 0 24 24"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></symbol>
+      <symbol id="i-reglages" viewBox="0 0 24 24"><path d="M4 7h10M18 7h2M4 17h4M12 17h8"/><circle cx="16" cy="7" r="2"/><circle cx="10" cy="17" r="2"/></symbol>
+      <symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9.5"/><path d="M12 11v6M12 7.5v.5"/></symbol>
+      <symbol id="i-fermer" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></symbol>
+      <symbol id="i-lecture" viewBox="0 0 24 24"><path d="M8 5.5v13l10.5-6.5L8 5.5Z"/></symbol>
+      <symbol id="i-pause" viewBox="0 0 24 24"><path d="M8 5.5v13M16 5.5v13"/></symbol>
+      <symbol id="i-cible" viewBox="0 0 24 24"><circle cx="12" cy="12" r="7.5"/><circle cx="12" cy="12" r="2"/><path d="M12 1.5v3M12 19.5v3M1.5 12h3M19.5 12h3"/></symbol>
+      <symbol id="i-cadre" viewBox="0 0 24 24"><path d="M4 8V4h4M16 4h4v4M20 16v4h-4M8 20H4v-4"/></symbol>
+      <symbol id="i-lien" viewBox="0 0 24 24"><path d="M10 14a4 4 0 0 0 5.7 0l3.2-3.2a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3.2 3.2a4 4 0 0 0 5.7 5.7l1-1"/></symbol>
+      <symbol id="i-maison" viewBox="0 0 24 24"><path d="M3 11 12 3.5 21 11M5.5 9.5V20.5h13V9.5"/></symbol>
+      <symbol id="i-telecharger" viewBox="0 0 24 24"><path d="M12 3v12M7 10l5 5 5-5M4 20h16"/></symbol>
+      <symbol id="i-camera" viewBox="0 0 24 24"><path d="M3 8h4l2-3h6l2 3h4v11H3Z"/><circle cx="12" cy="13" r="3.5"/></symbol>
+      <symbol id="i-boussole" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9.5"/><path d="m12 5 3 7-3 7-3-7 3-7Z"/></symbol>
+    </defs>
+  </svg>
+
+  <div id="carte" aria-label="Carte 3D de Nantes"></div>
+
+  <header class="barre-haut">
+    <div class="marque">
+      <img src="img/icone.svg" alt="" width="30" height="30">
+      <div><strong>Atlas 3D</strong><span>Nantes</span></div>
+    </div>
+    <div class="zone-titre">
+      <span class="etiquette">Zone d'étude</span>
+      <strong id="zone-nom">À choisir</strong>
+    </div>
+    <div class="barre-actions">
+      <button class="bouton discret" id="btn-modifier-zone" hidden>
+        <svg><use href="#i-cadre"/></svg><span>Modifier la zone</span>
+      </button>
+      <span id="badge-connexion" class="badge-connexion" data-etat="inconnu" title="État de la connexion">…</span>
+    </div>
+  </header>
+
+  <nav class="rail" id="rail" aria-label="Outils">
+    <button data-panneau="affichage" title="Affichage et couches"><svg><use href="#i-couches"/></svg><span>Affichage</span></button>
+    <button data-panneau="climat" title="Climat et météo"><svg><use href="#i-climat"/></svg><span>Climat</span></button>
+    <button data-panneau="mobilites" title="Mobilités en temps réel"><svg><use href="#i-mobilite"/></svg><span>Mobilités</span></button>
+    <button data-panneau="lieux" title="Sites et projets"><svg><use href="#i-projet"/></svg><span>Lieux</span></button>
+    <button data-panneau="parcours" title="Parcours et secteurs"><svg><use href="#i-parcours"/></svg><span>Parcours</span></button>
+    <button data-panneau="stats" title="Statistiques de la zone"><svg><use href="#i-stats"/></svg><span>Zone</span></button>
+    <span class="rail-espace"></span>
+    <button data-panneau="reglages" title="Réglages et enregistrements"><svg><use href="#i-reglages"/></svg><span>Réglages</span></button>
+    <button data-panneau="apropos" title="Sources et crédits"><svg><use href="#i-info"/></svg><span>Sources</span></button>
+  </nav>
+
+  <aside class="panneau panneau-gauche" id="panneau-gauche" hidden>
+    <header>
+      <h2 id="panneau-gauche-titre"></h2>
+      <button class="icone" data-fermer="panneau-gauche" title="Fermer"><svg><use href="#i-fermer"/></svg></button>
+    </header>
+    <div class="contenu" id="panneau-gauche-contenu"></div>
+  </aside>
+
+  <aside class="panneau panneau-droit" id="panneau-droit" hidden>
+    <header>
+      <h2 id="panneau-droit-titre"></h2>
+      <button class="icone" data-fermer="panneau-droit" title="Fermer"><svg><use href="#i-fermer"/></svg></button>
+    </header>
+    <div class="contenu" id="panneau-droit-contenu"></div>
+  </aside>
+
+  <section class="carte-selection" id="carte-selection" aria-live="polite">
+    <h2>Choisir la zone d'étude</h2>
+    <p class="aide">Déplacez le cadre, tirez ses coins ou ses bords, et faites-le pivoter avec la poignée ronde.</p>
+    <label class="champ">
+      <span>Secteur prédéfini</span>
+      <select id="selection-secteur"><option value="">— Cadre libre —</option></select>
+    </label>
+    <p class="note" id="selection-secteur-desc" hidden></p>
+    <dl class="mesures">
+      <div><dt>Dimensions</dt><dd id="selection-dimensions">—</dd></div>
+      <div><dt>Surface</dt><dd id="selection-surface">—</dd></div>
+      <div><dt>Bâtiments</dt><dd id="selection-batiments">—</dd></div>
+      <div><dt>Orientation</dt><dd id="selection-angle">—</dd></div>
+    </dl>
+    <div class="jauge" id="selection-jauge"><span></span></div>
+    <p class="note" id="selection-note"></p>
+    <div class="boutons">
+      <button class="bouton" id="btn-zone-recentrer" title="Placer le cadre au centre de la vue"><svg><use href="#i-cible"/></svg><span>Centrer</span></button>
+      <button class="bouton principal" id="btn-zone-valider"><svg><use href="#i-cadre"/></svg><span>Étudier cette zone</span></button>
+    </div>
+  </section>
+
+  <footer class="barre-temps" id="barre-temps">
+    <button class="icone rond" id="temps-lecture" title="Animer la journée"><svg><use href="#i-lecture"/></svg></button>
+    <div class="temps-principal">
+      <div class="temps-ligne">
+        <input type="date" id="temps-date" aria-label="Date">
+        <strong id="temps-heure">12:00</strong>
+        <span class="temps-soleil" id="temps-soleil">—</span>
+        <button class="puce" id="temps-maintenant" title="Revenir à l'heure actuelle">Maintenant</button>
+      </div>
+      <div class="curseur-temps">
+        <div class="ciel-degrade" id="ciel-degrade"></div>
+        <input type="range" id="temps-curseur" min="0" max="1439" step="5" value="720" aria-label="Heure de la journée">
+      </div>
+      <div class="temps-raccourcis">
+        <button class="puce" data-date="03-20">Équinoxe de printemps</button>
+        <button class="puce" data-date="06-21">Solstice d'été</button>
+        <button class="puce" data-date="09-22">Équinoxe d'automne</button>
+        <button class="puce" data-date="12-21">Solstice d'hiver</button>
+      </div>
+    </div>
+  </footer>
+
+  <div id="infobulle" class="infobulle" hidden></div>
+  <div id="notifications" class="notifications" aria-live="polite"></div>
+  <div id="chargement" class="chargement">
+    <div class="chargement-carte">
+      <img src="img/icone.svg" alt="" width="48" height="48">
+      <strong>Atlas 3D · Nantes</strong>
+      <span id="chargement-message">Chargement…</span>
+      <div class="barre-progression"><span id="chargement-progression"></span></div>
+    </div>
+  </div>
+</body>
+</html>

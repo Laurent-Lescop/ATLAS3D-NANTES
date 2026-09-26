@@ -1,0 +1,34 @@
+{
+  "maplibre-gl": {
+    "version": "6.11.2",
+    "licence": "BSD-3-Clause"
+  },
+  "deck.gl": {
+    "version": "9.4.0",
+    "licence": "MIT"
+  },
+  "pmtiles": {
+    "version": "4.5.0",
+    "licence": "BSD-3-Clause"
+  },
+  "suncalc": {
+    "version": "2.0.2",
+    "licence": "voir LICENSE"
+  },
+  "marked": {
+    "version": "18.0.14",
+    "licence": "MIT"
+  },
+  "dompurify": {
+    "version": "3.4.16",
+    "licence": "(MPL-2.0 OR Apache-2.0)"
+  },
+  "proj4": {
+    "version": "2.22.0",
+    "licence": "MIT"
+  },
+  "web-ifc": {
+    "version": "0.0.78",
+    "licence": "MPL-2.0"
+  }
+}

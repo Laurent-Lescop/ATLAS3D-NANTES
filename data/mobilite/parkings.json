@@ -1,0 +1,218 @@
+[
+ {
+  "id": "1",
+  "nom": "FEYDEAU",
+  "capacite": 490,
+  "adresse": "Parvis Neptune",
+  "lon": -1.552558781065703,
+  "lat": 47.21407529472319
+ },
+ {
+  "id": "5",
+  "nom": "ARISTIDE BRIAND",
+  "capacite": 303,
+  "adresse": "Place Aristide Briand",
+  "lon": -1.5629364155817649,
+  "lat": 47.217093597901226
+ },
+ {
+  "id": "9",
+  "nom": "CITE INT DES CONGRES",
+  "capacite": 439,
+  "adresse": "Avenue Jean Claude Bonduelle",
+  "lon": -1.5439712738984481,
+  "lat": 47.2129016651793
+ },
+ {
+  "id": "12",
+  "nom": "DESCARTES",
+  "capacite": 251,
+  "adresse": "Rue Descartes",
+  "lon": -1.564364526212151,
+  "lat": 47.217188847954716
+ },
+ {
+  "id": "34",
+  "nom": "GARE SUD 4",
+  "capacite": 330,
+  "adresse": "24 Mail Pablo Picasso",
+  "lon": -1.5379338929841764,
+  "lat": 47.21510335976384
+ },
+ {
+  "id": "36",
+  "nom": "BACO 2",
+  "capacite": 118,
+  "adresse": "Allée Baco",
+  "lon": -1.5516042545448998,
+  "lat": 47.21315097438518
+ },
+ {
+  "id": "47",
+  "nom": "LES NEFS",
+  "capacite": 300,
+  "adresse": "61 Boulevard de la Prairie au Duc",
+  "lon": -1.5632873817591502,
+  "lat": 47.204092541956626
+ },
+ {
+  "id": "2",
+  "nom": "DECRE - BOUFFAY",
+  "capacite": 394,
+  "adresse": "18 Rue du Moulin",
+  "lon": -1.5540046292504972,
+  "lat": 47.216662613183885
+ },
+ {
+  "id": "7",
+  "nom": "COMMERCE",
+  "capacite": 406,
+  "adresse": "Place du Commerce",
+  "lon": -1.557713217159592,
+  "lat": 47.2131202800862
+ },
+ {
+  "id": "15",
+  "nom": "HOTEL DIEU",
+  "capacite": 100,
+  "adresse": "Chaussée de la Madeleine",
+  "lon": -1.5519831099609056,
+  "lat": 47.211057080450736
+ },
+ {
+  "id": "17",
+  "nom": "CHU",
+  "capacite": 135,
+  "adresse": "Quai de Tourville",
+  "lon": -1.5572502317729704,
+  "lat": 47.20936196559804
+ },
+ {
+  "id": "29",
+  "nom": "BELLAMY",
+  "capacite": 76,
+  "adresse": "Impasse de la Courtine",
+  "lon": -1.5576936898606668,
+  "lat": 47.22236040909734
+ },
+ {
+  "id": "42",
+  "nom": "CHU 2",
+  "capacite": 61,
+  "adresse": "Quai Moncousu",
+  "lon": -1.5529138839211876,
+  "lat": 47.20889024774273
+ },
+ {
+  "id": "3",
+  "nom": "TOUR BRETAGNE",
+  "capacite": 643,
+  "adresse": "4 Place de Bretagne",
+  "lon": -1.5582500168918192,
+  "lat": 47.21784288795037
+ },
+ {
+  "id": "4",
+  "nom": "GRASLIN",
+  "capacite": 455,
+  "adresse": "Rue Scribe",
+  "lon": -1.5625718137430404,
+  "lat": 47.2143102053585
+ },
+ {
+  "id": "6",
+  "nom": "MEDIATHEQUE",
+  "capacite": 398,
+  "adresse": "Rue Neuve des Capucins",
+  "lon": -1.5623381737543782,
+  "lat": 47.21087082120933
+ },
+ {
+  "id": "8",
+  "nom": "TALENSAC",
+  "capacite": 320,
+  "adresse": "Rue Le Nôtre",
+  "lon": -1.5583572970724853,
+  "lat": 47.22025597434886
+ },
+ {
+  "id": "10",
+  "nom": "CATHEDRALE",
+  "capacite": 348,
+  "adresse": "Rue Sully",
+  "lon": -1.5510561654614727,
+  "lat": 47.22081334425927
+ },
+ {
+  "id": "11",
+  "nom": "LES MACHINES",
+  "capacite": 397,
+  "adresse": "Rue Arthur III",
+  "lon": -1.5627277898724061,
+  "lat": 47.20590061614064
+ },
+ {
+  "id": "16",
+  "nom": "GARE SUD-LIMITE 1H",
+  "capacite": 60,
+  "adresse": "Quai Malakoff",
+  "lon": -1.5405805815658893,
+  "lat": 47.21370471058834
+ },
+ {
+  "id": "21",
+  "nom": "GARE NORD",
+  "capacite": 540,
+  "adresse": "Cours John Kennedy",
+  "lon": -1.5449843310082838,
+  "lat": 47.21668903410084
+ },
+ {
+  "id": "25",
+  "nom": "GARE SUD 1",
+  "capacite": 380,
+  "adresse": "Rue de Lourmel",
+  "lon": -1.5410368260441125,
+  "lat": 47.21614962929036
+ },
+ {
+  "id": "27",
+  "nom": "GARE SUD 3",
+  "capacite": 500,
+  "adresse": "32 Rue du Pré Gauchet",
+  "lon": -1.5392563084462647,
+  "lat": 47.21491533439512
+ },
+ {
+  "id": "35",
+  "nom": "BACO 1",
+  "capacite": 92,
+  "adresse": "Allée Baco",
+  "lon": -1.5489888254435977,
+  "lat": 47.21433241531008
+ },
+ {
+  "id": "37",
+  "nom": "GLORIETTE 2",
+  "capacite": 87,
+  "adresse": "Rue Albert de Mun",
+  "lon": -1.5602843655802539,
+  "lat": 47.210273681361414
+ },
+ {
+  "id": "40",
+  "nom": "FONDERIES",
+  "capacite": 130,
+  "adresse": "Rue de la Porte Gellée",
+  "lon": -1.5443329511381525,
+  "lat": 47.204970459088806
+ },
+ {
+  "id": "44",
+  "nom": "GARE SUD 2",
+  "capacite": 457,
+  "adresse": "Boulevard de Berlin",
+  "lon": -1.5363160630555566,
+  "lat": 47.21698117112644
+ }
+]
