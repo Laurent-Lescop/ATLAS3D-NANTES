@@ -69,3 +69,10 @@ export function pick(x, y, opts = {}) {
 }
 
 export const obtenirOverlay = () => overlay;
+
+// Les couches composites (TextLayer) ne transmettent pas « shadowEnabled » à leurs sous-couches :
+// sans ce réglage, le fond et les caractères des étiquettes projettent une grande ombre au sol.
+export const SANS_OMBRE = {
+  shadowEnabled: false,
+  _subLayerProps: { background: { shadowEnabled: false }, characters: { shadowEnabled: false } },
+};

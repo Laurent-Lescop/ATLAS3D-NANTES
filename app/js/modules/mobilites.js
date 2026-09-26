@@ -10,7 +10,7 @@ import { etat, on, lirePreference, ecrirePreference } from '../etat.js';
 import { lireSource, lireJSON } from '../api.js';
 import { enregistrerPanneau, rafraichirPanneau } from '../ui/panneaux.js';
 import { ajouterSectionReglages } from './reglages.js';
-import { definirCouches, surSurvol } from '../carte/rendu3d.js';
+import { definirCouches, surSurvol, SANS_OMBRE } from '../carte/rendu3d.js';
 import { afficherInfobulle } from '../ui/infobulle.js';
 import { emprise, echelles } from '../lib/geo.js';
 import * as sim from '../lib/simulation.js';
@@ -288,9 +288,10 @@ function reconstruireStatiques() {
     statiques.push(new deck.TextLayer({
       id: 'parkings-libres', data: pk.filter((p) => p.v),
       getPosition: (p) => [p.lon, p.lat, H + 6], getText: (p) => `${entier(p.v.libres)} pl.`,
-      getSize: 12, getColor: [27, 33, 48, 255], background: true, getBackgroundColor: [255, 255, 255, 225],
-      backgroundPadding: [4, 2], fontFamily: 'system-ui, sans-serif', fontWeight: 700, shadowEnabled: false,
-      characterSet: 'auto',
+      getSize: 11, getColor: [27, 33, 48, 255], background: true, getBackgroundColor: [255, 255, 255, 235],
+      backgroundPadding: [5, 2, 5, 2], backgroundBorderRadius: 4, getBorderColor: [90, 96, 110, 140], getBorderWidth: 1,
+      getAlignmentBaseline: 'bottom', getPixelOffset: [0, -3],
+      fontFamily: 'system-ui, sans-serif', fontWeight: 700, characterSet: 'auto', ...SANS_OMBRE,
     }));
   }
 
@@ -362,7 +363,7 @@ function image(now) {
       id: 'tc-numeros', data: pos.filter((d) => d.v.type === 0 || d.v.type === 4),
       getPosition: (d) => d.p, getText: (d) => d.v.ligne, getSize: 10, fontWeight: 700,
       getColor: (d) => lireCouleur(d.v.texte)?.slice(0, 3) || [255, 255, 255], fontFamily: 'system-ui, sans-serif',
-      billboard: true, shadowEnabled: false, characterSet: 'auto',
+      billboard: true, characterSet: 'auto', ...SANS_OMBRE,
     }));
   }
   definirCouches('mobilites', [...statiques, ...dyn]);

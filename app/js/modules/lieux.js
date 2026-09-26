@@ -8,7 +8,7 @@
 import { etat, emit, on, lirePreference, ecrirePreference } from '../etat.js';
 import { lireJSON, enregistrerFichier, listerFichiers, supprimerFichier } from '../api.js';
 import { enregistrerPanneau, rafraichirPanneau, fermerFiche, ouvrirFiche as ouvrirPanneauDroit } from '../ui/panneaux.js';
-import { definirCouches, surSurvol, surClic } from '../carte/rendu3d.js';
+import { definirCouches, surSurvol, surClic, SANS_OMBRE } from '../carte/rendu3d.js';
 import { definirEmblemes, definirMasques, batimentParId } from '../carte/batiments3d.js';
 import { obtenirCarte } from '../carte/fond.js';
 import { afficherInfobulle } from '../ui/infobulle.js';
@@ -25,6 +25,7 @@ const EMBLEME = [222, 124, 62];
 const PROJET = [47, 127, 209];
 // Site existant en cuivre ; projet ou chantier en bleu.
 const couleurSite = (s) => (!s.statut || s.statut === 'existant' ? EMBLEME : PROJET);
+const TIGE = 20; // hauteur de la tige des panneaux (px)
 
 let sites = [];
 let projets = [];
@@ -128,10 +129,10 @@ function dessiner() {
 // Marques (pastille + nom) des sites et des projets visibles.
 function marques() {
   return [
-    ...sitesVisibles().map((s) => ({ type: 'site', ref: s, titre: s.etiquette || s.titre, p: [...s.position, hauteurSite(s) + 6], couleur: couleurSite(s) })),
+    ...sitesVisibles().map((s) => ({ type: 'site', ref: s, titre: s.etiquette || s.titre, p: [...s.position, hauteurSite(s) + 1.5], couleur: couleurSite(s) })),
     ...projetsVisibles().map((p) => ({
       type: 'projet', ref: p, titre: p.fiche?.titre || p.id,
-      p: [p.placement.lon, p.placement.lat, (p.placement.alt || 0) + (p.dimensions?.[2] || 20) * (p.placement.echelle || 1) + 6], couleur: PROJET,
+      p: [p.placement.lon, p.placement.lat, (p.placement.alt || 0) + (p.dimensions?.[2] || 20) * (p.placement.echelle || 1) + 1.5], couleur: PROJET,
     })),
   ];
 }
@@ -152,9 +153,9 @@ function nomsLisibles(liste) {
   for (const d of [...liste].sort((a, b) => priorite(b) - priorite(a))) {
     const [x, y] = vue.project(d.p);
     if (x < -50 || y < -50 || x > c.clientWidth + 50 || y > c.clientHeight + 50) continue;
-    const lignes = Math.ceil(d.titre.length / 20);
-    const l = Math.min(d.titre.length, 20) * 7.2 + 14, h = lignes * 15 + 8;
-    const b = [x - l / 2, y - 16 - h, x + l / 2, y - 12];
+    const lignes = Math.ceil(d.titre.length / 22);
+    const l = Math.min(d.titre.length, 22) * 6.8 + 18, h = lignes * 14 + 10;
+    const b = [x - l / 2, y - TIGE - 4 - h, x + l / 2, y - TIGE + 4];
     if (boites.some((o) => b[0] < o[2] && b[2] > o[0] && b[1] < o[3] && b[3] > o[1])) continue;
     boites.push(b);
     gardes.push(d);
@@ -162,22 +163,42 @@ function nomsLisibles(liste) {
   return gardes;
 }
 
+// Tige verticale (icône teintée) qui relie la pastille posée sur le toit au panneau.
+let tige = null;
+function iconeTige() {
+  if (!tige) {
+    const c = document.createElement('canvas');
+    c.width = 4; c.height = 48;
+    c.getContext('2d').fillRect(0, 0, 4, 48);
+    tige = { url: c.toDataURL(), width: 4, height: 48, anchorY: 48, mask: true };
+  }
+  return tige;
+}
+
+// Panneau : pastille sur le toit du site, fine tige, puis cartouche suspendu face à la caméra.
 function dessinerEtiquettes() {
   if (etat.mode !== 'etude' || etat.reglages.etiquettesLieux === false) { definirCouches('etiquettes', []); return; }
   const tout = marques();
   const noms = nomsLisibles(tout);
+  const devant = { depthCompare: 'always', depthWriteEnabled: false };
   definirCouches('etiquettes', [
+    new deck.IconLayer({
+      id: 'lieux-tiges', data: noms, getPosition: (d) => d.p, getIcon: iconeTige, getSize: TIGE, sizeUnits: 'pixels',
+      getColor: (d) => [...d.couleur, 220], billboard: true, pickable: false, shadowEnabled: false, parameters: devant,
+    }),
     new deck.ScatterplotLayer({
-      id: 'lieux-pastilles', data: tout, getPosition: (d) => d.p, getRadius: 6, radiusUnits: 'pixels',
-      getFillColor: (d) => d.couleur, stroked: true, getLineColor: [255, 255, 255], getLineWidth: 2, lineWidthUnits: 'pixels',
-      billboard: true, pickable: true, shadowEnabled: false, parameters: { depthCompare: 'always', depthWriteEnabled: false },
+      id: 'lieux-pastilles', data: tout, getPosition: (d) => d.p, getRadius: 4, radiusUnits: 'pixels',
+      getFillColor: (d) => d.couleur, stroked: true, getLineColor: [255, 255, 255], getLineWidth: 1.5, lineWidthUnits: 'pixels',
+      billboard: true, pickable: true, shadowEnabled: false, parameters: devant,
     }),
     new deck.TextLayer({
-      id: 'lieux-noms', data: noms, getPosition: (d) => d.p, getText: (d) => d.titre, getSize: 12.5,
-      getColor: [27, 33, 48, 255], background: true, getBackgroundColor: [255, 255, 255, 230], backgroundPadding: [6, 3],
-      getPixelOffset: [0, -16], fontFamily: 'system-ui, sans-serif', fontWeight: 600, characterSet: 'auto',
-      pickable: true, shadowEnabled: false, parameters: { depthCompare: 'always', depthWriteEnabled: false },
-      maxWidth: 16, wordBreak: 'break-word',
+      id: 'lieux-noms', data: noms, getPosition: (d) => d.p, getText: (d) => d.titre, getSize: 11.5,
+      getColor: [27, 33, 48, 255], fontFamily: 'system-ui, sans-serif', fontWeight: 600, characterSet: 'auto',
+      getPixelOffset: [0, -(TIGE + 4)], getAlignmentBaseline: 'bottom',
+      background: true, getBackgroundColor: [255, 255, 255, 240], backgroundPadding: [7, 4, 7, 4], backgroundBorderRadius: 5,
+      getBorderColor: (d) => [...d.couleur, 255], getBorderWidth: 1.5,
+      maxWidth: 17, wordBreak: 'break-word', billboard: true, pickable: true, parameters: devant,
+      ...SANS_OMBRE,
     }),
   ]);
 }

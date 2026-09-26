@@ -4,7 +4,7 @@
 import * as SunCalc from '../../vendor/suncalc/index.js';
 import { etat, emit, on } from '../etat.js';
 import { dateParis, minutesParis, isoJourParis, hhmm, heureParis, partiesParis } from '../temps.js';
-import { definirEclairage, definirCouches } from './rendu3d.js';
+import { definirEclairage, definirCouches, SANS_OMBRE } from './rendu3d.js';
 import { appliquerAmbiance, obtenirCarte } from './fond.js';
 import { versLonLat } from '../lib/geo.js';
 import { melanger, versCss } from '../lib/couleurs.js';
@@ -202,8 +202,8 @@ function dessinerCourse(date) {
     new deck.TextLayer({
       id: 'soleil-heures', data: reperes, getPosition: (d) => d.p, getText: (d) => d.t, getSize: 12,
       getColor: [120, 80, 20, 255], background: true, getBackgroundColor: [255, 246, 225, 220],
-      backgroundPadding: [4, 2], fontFamily: 'system-ui, sans-serif', getPixelOffset: [0, -14],
-      parameters: { depthCompare: 'always', depthWriteEnabled: false }, shadowEnabled: false,
+      backgroundPadding: [4, 2], backgroundBorderRadius: 4, fontFamily: 'system-ui, sans-serif', getPixelOffset: [0, -14],
+      parameters: { depthCompare: 'always', depthWriteEnabled: false }, ...SANS_OMBRE,
     }),
   ]);
 }
